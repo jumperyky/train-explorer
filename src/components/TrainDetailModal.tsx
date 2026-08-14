@@ -5,6 +5,7 @@ import type { Train } from "@/data/types";
 import { networkMap, lineMap } from "@/data/lines";
 import RubyText from "./RubyText";
 import TrainPhoto from "./TrainPhoto";
+import SourceList from "./SourceList";
 import { toPlainText } from "@/lib/ruby";
 
 /**
@@ -57,6 +58,11 @@ export default function TrainDetailModal({
         </div>
 
         <div className="px-5 pt-4">
+          {train.photo?.note && (
+            <p className="ruby-line mb-2 text-base text-foreground/50">
+              <RubyText text={train.photo.note} />
+            </p>
+          )}
           <span
             className="ruby-line inline-block rounded-full px-3 py-1 text-base text-white"
             style={{ background: network.color }}
@@ -68,16 +74,23 @@ export default function TrainDetailModal({
             <RubyText text={train.name} />
           </h2>
 
-          <dl className="mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-[#eaf4ff] p-3 text-center">
-              <dt className="ruby-line text-base text-foreground/60">
-                <RubyText text="最高速度《さいこうそくど》" />
-              </dt>
-              <dd className="text-3xl" style={{ color: network.color }}>
-                {train.maxSpeed}
-                <span className="text-lg"> km/h</span>
-              </dd>
-            </div>
+          {/* 最高速度は裏の取れた車両にだけある。無いときは欄ごと出さない */}
+          <dl
+            className={`mt-4 grid gap-3 ${
+              train.maxSpeed === undefined ? "grid-cols-1" : "grid-cols-2"
+            }`}
+          >
+            {train.maxSpeed !== undefined && (
+              <div className="rounded-2xl bg-[#eaf4ff] p-3 text-center">
+                <dt className="ruby-line text-base text-foreground/60">
+                  <RubyText text="最高速度《さいこうそくど》" />
+                </dt>
+                <dd className="text-3xl" style={{ color: network.color }}>
+                  {train.maxSpeed}
+                  <span className="text-lg"> km/h</span>
+                </dd>
+              </div>
+            )}
             <div className="rounded-2xl bg-[#eaf4ff] p-3 text-center">
               <dt className="ruby-line text-base text-foreground/60">デビュー</dt>
               <dd className="ruby-line text-3xl" style={{ color: network.color }}>
@@ -141,6 +154,8 @@ export default function TrainDetailModal({
               </p>
             </div>
           )}
+
+          <SourceList sources={train.sources} />
         </div>
       </div>
     </div>

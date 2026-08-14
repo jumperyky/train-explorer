@@ -76,6 +76,7 @@ USER_AGENT = env(
     "train-explorer/0.1 (https://github.com/jumperyky/train-explorer) python-httpx",
 )
 WIKI_API = "https://ja.wikipedia.org/w/api.php"
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 ODPT_BASE = env("ODPT_BASE_URL", "https://api.odpt.org/api/v4")
 
 # ---------------------------------------------------------------- キャッシュ
@@ -247,6 +248,87 @@ async def image(title: str = Query(..., min_length=1, max_length=120)) -> ImageR
 
     cache_set(key, payload)
     return ImageResponse(**payload)
+
+
+# -------------------------------------------------------------------- photo
+
+
+class PhotoResponse(BaseModel):
+    file: str
+    imageUrl: str | None = None
+    """表示用サムネイルのURL"""
+    descriptionUrl: str | None = None
+    """Commons のファイル解説ページ。クレジットのリンク先"""
+    artist: str | None = None
+    license: str | None = None
+    licenseUrl: str | None = None
+    attributionRequired: bool = True
+
+
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _plain(html: str | None) -> str | None:
+    """extmetadata の値はHTML断片で返ってくるのでタグを落とす。"""
+    if not html:
+        return None
+    return _TAG_RE.sub("", html).strip() or None
+
+
+@app.get("/api/py/photo", response_model=PhotoResponse)
+async def photo(
+    file: str = Query(..., min_length=1, max_length=200),
+) -> PhotoResponse:
+    """
+    Commons のファイルを直接指定して、サムネイルURLと**クレジット情報**を返す。
+
+    CC BY-SA の写真は表示にクレジットが要る（AttributionRequired=true）ので、
+    画像URLだけでなく撮影者とライセンスも一緒に返し、UI側で必ず出せるようにする。
+    サムネイル幅は iiurlwidth で Commons に発行させる（幅の自前書き換えは 400 になる）。
+    """
+    name = file if file.lower().startswith("file:") else f"File:{file}"
+    key = f"photo:{name}"
+    cached = cache_get(key)
+    if cached is not None:
+        return PhotoResponse(**cached)
+
+    params = {
+        "action": "query",
+        "format": "json",
+        "formatversion": "2",
+        "prop": "imageinfo",
+        "iiprop": "url|extmetadata",
+        "iiurlwidth": str(IMAGE_WIDTH),
+        "titles": name,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
+            res = await client.get(
+                COMMONS_API,
+                params=params,
+                headers={"User-Agent": USER_AGENT, "Accept": "application/json"},
+            )
+        res.raise_for_status()
+        pages = (res.json().get("query") or {}).get("pages") or []
+        page = pages[0] if pages else {}
+        info = (page.get("imageinfo") or [{}])[0]
+        meta = info.get("extmetadata") or {}
+        required = (meta.get("AttributionRequired") or {}).get("value")
+        payload = PhotoResponse(
+            file=name,
+            imageUrl=info.get("thumburl") or info.get("url"),
+            descriptionUrl=info.get("descriptionurl"),
+            artist=_plain((meta.get("Artist") or {}).get("value")),
+            license=_plain((meta.get("LicenseShortName") or {}).get("value")),
+            licenseUrl=_plain((meta.get("LicenseUrl") or {}).get("value")),
+            # 不明なときは「必要」に倒す（表示しすぎる方が安全）
+            attributionRequired=str(required).lower() != "false",
+        ).model_dump()
+    except (httpx.HTTPError, ValueError, KeyError, IndexError):
+        payload = PhotoResponse(file=name).model_dump()
+
+    cache_set(key, payload)
+    return PhotoResponse(**payload)
 
 
 # --------------------------------------------------------------------- ODPT

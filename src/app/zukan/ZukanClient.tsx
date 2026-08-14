@@ -57,9 +57,11 @@ export default function ZukanClient({
                 <p className="ruby-line text-2xl leading-tight">
                   <RubyText text={t.name} />
                 </p>
-                <p className="ruby-line mt-1 text-lg text-[#e5342a]">
-                  <RubyText text="最高《さいこう》" /> {t.maxSpeed} km/h
-                </p>
+                {t.maxSpeed !== undefined && (
+                  <p className="ruby-line mt-1 text-lg text-[#e5342a]">
+                    <RubyText text="最高《さいこう》" /> {t.maxSpeed} km/h
+                  </p>
+                )}
               </div>
             </button>
           </li>

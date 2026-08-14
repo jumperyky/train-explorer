@@ -18,7 +18,7 @@ import type { NetworkId, Station } from "@/data/types";
 import { trainsOnLine } from "@/data/trains";
 import RubyText from "@/components/RubyText";
 import StationSign from "@/components/StationSign";
-import TrainPhoto from "@/components/TrainPhoto";
+import TrainArt from "@/components/TrainArt";
 
 /**
  * 機能C: わくわく鉄道マップ。
@@ -186,7 +186,8 @@ function StationPopup({ station }: { station: Station }) {
         <ul className="mt-2 flex gap-2">
           {trains.map((t) => (
             <li key={t.id} className="flex-1 overflow-hidden rounded-xl bg-white shadow">
-              <TrainPhoto train={t} className="h-14 w-full object-cover" />
+              {/* ポップアップは小さすぎて写真のクレジットが読めないため、イラストを使う */}
+              <TrainArt train={t} className="h-14 w-full object-cover" />
               <p className="ruby-line px-1 py-1 text-center text-xs">
                 <RubyText text={t.name} />
               </p>

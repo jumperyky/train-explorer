@@ -1,10 +1,22 @@
-import type { Train } from "./types";
+import type { Citation, Train } from "./types";
 
 /**
- * 車両マスタ（MVPモックデータ）。
- * 画像は wikipediaTitle をキーに /api/py/image（画像取得プロキシ）から取りに行き、
- * 取得できないときは内蔵のイラスト（TrainArt）を表示する。
+ * 車両マスタ。
+ *
+ * 追加するときの決まりごと:
+ *  - secrets に書く事実は必ず sources で裏を取る。書けないなら書かない
+ *  - maxSpeed は確認できた値だけ。不明なら省略する（UIが自動で欄を消す）
+ *  - photo は Commons のファイルを直接指定する。記事の代表画像は予告なく
+ *    差し替わり、塗装の違う写真になることがある（900形で実際に起きた）
+ *  - bodyColor / stripeColor は内蔵イラスト用。写真と同じ塗装に合わせる
  */
+
+/** Wikipedia(ja) の記事を出典として書くためのヘルパー */
+const wikipedia = (title: string): Citation => ({
+  title: `Wikipedia「${title}」`,
+  url: `https://ja.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g, "_"))}`,
+});
+
 export const trains: Train[] = [
   // ===== 東海道新幹線 =====
   {
@@ -18,11 +30,13 @@ export const trains: Train[] = [
     stripeColor: "#2b5fd9",
     secrets: [
       "「S」は「Supreme（最高《さいこう》）」という 意味《いみ》だよ。",
-      "先頭《せんとう》の 形《かたち》は「デュアルスプリームウィング形《がた》」と いうんだ。",
-      "電気《でんき》が 止《と》まっても、バッテリーで 少《すこ》し 走《はし》れる すごい 新幹線《しんかんせん》。",
+      "先頭《せんとう》の 形《かたち》は「デュアル・スプリーム・ウィング形《がた》」。ふたつの 最高《さいこう》の つばさ、という 意味《いみ》。",
+      "電気《でんき》が 止《と》まっても、バッテリーで 安全《あんぜん》な ところまで 自分《じぶん》で 走《はし》れるよ。",
     ],
     lineIds: ["tokaido-shinkansen"],
     wikipediaTitle: "新幹線N700S系電車",
+    photo: { commonsFile: "File:Series-N700S-J2.jpg" },
+    sources: [wikipedia("新幹線N700S系電車")],
     aliases: ["えぬななひゃくえす", "えぬせぶんはんどれっどえす", "のぞみ", "しんかんせん"],
   },
   {
@@ -36,11 +50,13 @@ export const trains: Train[] = [
     stripeColor: "#1f4fb6",
     secrets: [
       "カーブでも スピードを 落《お》とさない「車体傾斜《しゃたいけいしゃ》」の しくみを もつよ。",
-      "「A」は「Advanced（すすんだ）」という 意味《いみ》。",
+      "改良型《かいりょうがた》の「N700A」の A は「Advanced（すすんだ）」の こと。",
       "のぞみ・ひかり・こだま、全部《ぜんぶ》で 走《はし》っているよ。",
     ],
     lineIds: ["tokaido-shinkansen"],
     wikipediaTitle: "新幹線N700系電車",
+    photo: { commonsFile: "File:Shinkansen N700 z15.jpg" },
+    sources: [wikipedia("新幹線N700系電車")],
     aliases: ["えぬななひゃくけい", "えぬななひゃく", "ひかり", "こだま"],
   },
   {
@@ -59,6 +75,8 @@ export const trains: Train[] = [
     ],
     lineIds: ["tokaido-shinkansen"],
     wikipediaTitle: "新幹線923形電車",
+    photo: { commonsFile: "File:Type923-T4.jpg" },
+    sources: [wikipedia("新幹線923形電車")],
     aliases: ["どくたーいえろー", "きいろいしんかんせん", "どくたー"],
   },
 
@@ -73,12 +91,14 @@ export const trains: Train[] = [
     bodyColor: "#e9edf2",
     stripeColor: "#0b5ea8",
     secrets: [
-      "新快速《しんかいそく》で 130キロ！ 在来線《ざいらいせん》では 日本《にほん》で いちばんクラスの 速《はや》さ。",
-      "窓《まど》が 大《おお》きくて、外《そと》が よく 見《み》えるよ。",
+      "この 電車《でんしゃ》が できて、新快速《しんかいそく》は 130キロで 走《はし》れるように なったんだ。",
+      "225系《けい》と いっしょに、いまの 新快速《しんかいそく》を 走《はし》らせている 主役《しゅやく》だよ。",
       "2019年《ねん》から 一部《いちぶ》の 編成《へんせい》に、ゆったり すわれる とくべつな せき「Aシート」が ついたよ。",
     ],
     lineIds: ["biwako", "jr-kyoto", "jr-kobe"],
     wikipediaTitle: "JR西日本223系電車",
+    photo: { commonsFile: "File:Series223-2000-V7.jpg" },
+    sources: [wikipedia("JR西日本223系電車")],
     aliases: ["にひゃくにじゅうさんけい", "しんかいそく", "にーにーさん"],
   },
   {
@@ -91,12 +111,14 @@ export const trains: Train[] = [
     bodyColor: "#f2f4f7",
     stripeColor: "#0b5ea8",
     secrets: [
-      "223系《けい》の 新《あたら》しい 仲間《なかま》。顔《かお》が まるっこいのが 特徴《とくちょう》。",
-      "ぶつかっても つよいように、先頭《せんとう》が がんじょうに つくられているよ。",
+      "223系《けい》の 弟《おとうと》。顔《かお》は 223系《けい》より 角《かく》ばっているよ。",
+      "ぶつかったとき、先頭《せんとう》の 上《うえ》が わざと つぶれて 力《ちから》を 逃《に》がす しくみ。「ともえ投《な》げ方式《ほうしき》」と いうんだ。",
       "新快速《しんかいそく》・快速《かいそく》・普通《ふつう》、いろいろな 種別《しゅべつ》で 走《はし》るよ。",
     ],
     lineIds: ["biwako", "jr-kyoto", "jr-kobe"],
     wikipediaTitle: "JR西日本225系電車",
+    photo: { commonsFile: "File:Series225-0-I7-Rapid (2021-09-07).jpg" },
+    sources: [wikipedia("JR西日本225系電車")],
     aliases: ["にひゃくにじゅうごけい", "にーにーご"],
   },
   {
@@ -109,12 +131,14 @@ export const trains: Train[] = [
     bodyColor: "#f7f7f2",
     stripeColor: "#3aa76d",
     secrets: [
-      "窓《まど》が とっても 大《おお》きくて、景色《けしき》が よく 見《み》える 電車《でんしゃ》。",
+      "窓《まど》の 高《たか》さは 1メートル。どの せきからも 外《そと》が 見《み》えるように つくられたよ。",
+      "前《まえ》の 大《おお》きな まるい ガラスが 特徴《とくちょう》。スピード感《かん》の ある かたちだよ。",
       "「大和路快速《やまとじかいそく》」でも 活躍《かつやく》しているよ。",
-      "今《いま》は 主《おも》に 普通《ふつう》や 快速《かいそく》で 走《はし》っているよ。",
     ],
     lineIds: ["biwako", "jr-kyoto", "jr-kobe"],
     wikipediaTitle: "JR西日本221系電車",
+    photo: { commonsFile: "File:JRW Series221 NB809.jpg" },
+    sources: [wikipedia("JR西日本221系電車")],
     aliases: ["にひゃくにじゅういちけい", "にーにーいち"],
   },
   {
@@ -127,12 +151,14 @@ export const trains: Train[] = [
     bodyColor: "#eef1f4",
     stripeColor: "#1f6fb2",
     secrets: [
-      "青《あお》と オレンジの ラインが 目印《めじるし》。",
+      "濃《こ》い青《あお》・うすい青《あお》・白《しろ》の 3色《しょく》の 帯《おび》が めじるし。",
       "止《と》まったり 走《はし》ったり するのが 得意《とくい》で、普通電車《ふつうでんしゃ》で 活躍《かつやく》。",
-      "「JR宝塚線《たからづかせん》」や「JR東西線《とうざいせん》」にも 乗《の》り入《い》れるよ。",
+      "「JR東西線《とうざいせん》」の 地下《ちか》を 走《はし》るために つくられた 電車《でんしゃ》なんだ。",
     ],
     lineIds: ["jr-kyoto", "jr-kobe"],
     wikipediaTitle: "JR西日本207系電車",
+    photo: { commonsFile: "File:Series-207-1000-S51 (2021-05-25).jpg" },
+    sources: [wikipedia("JR西日本207系電車")],
     aliases: ["にひゃくななけい", "にーまるなな"],
   },
   {
@@ -146,31 +172,36 @@ export const trains: Train[] = [
     stripeColor: "#1f6fb2",
     secrets: [
       "207系《けい》の あとに つくられた 新《あたら》しい 普通電車《ふつうでんしゃ》。",
-      "天井《てんじょう》に 駅名《えきめい》を おしえてくれる 画面《がめん》が ついているよ。",
-      "モーターの 音《おと》が しずかで、ゆれが 少《すく》ないんだ。",
+      "天井《てんじょう》に 液晶画面《えきしょうがめん》が 12面《めん》。駅名《えきめい》や 乗《の》りかえを 教《おし》えてくれるよ。",
+      "「0.5Mシステム」で、ほとんど 全部《ぜんぶ》の 車両《しゃりょう》に モーターが ついているよ。",
     ],
     lineIds: ["jr-kyoto", "jr-kobe"],
     wikipediaTitle: "JR西日本321系電車",
+    photo: { commonsFile: "File:Series-321-D17 (2021-11-25).jpg" },
+    sources: [wikipedia("JR西日本321系電車")],
     aliases: ["さんびゃくにじゅういちけい", "さんにーいち"],
   },
 
   // ===== 近江鉄道 =====
+  // 車両の最高速度は確認できていないので maxSpeed は入れない。
+  // 路線側の最高速度（彦根〜八日市 70km/h、ほか 60km/h）は secrets に書いた。
   {
     id: "ohmi-100",
     network: "ohmi",
     name: "100形《がた》",
     kana: "ひゃくがた",
-    maxSpeed: 85,
     debutYear: 2013,
-    bodyColor: "#f4a300",
-    stripeColor: "#2e7d32",
+    bodyColor: "#5ec2ef",
+    stripeColor: "#ffffff",
     secrets: [
-      "「湘南色《しょうなんしょく》」の 緑《みどり》と オレンジの 電車《でんしゃ》が いるよ。",
-      "もとは 東京《とうきょう》の 西武鉄道《せいぶてつどう》を 走《はし》っていた 電車《でんしゃ》なんだ。",
+      "琵琶湖《びわこ》を イメージした 水色《みずいろ》に、白《しろ》い 帯《おび》の 電車《でんしゃ》。",
+      "もとは 東京《とうきょう》の 西武鉄道《せいぶてつどう》を 走《はし》っていたんだ。",
       "2両《りょう》 つないで 走《はし》ることが 多《おお》いよ。",
     ],
     lineIds: ["ohmi-main", "ohmi-taga", "ohmi-yokaichi"],
     wikipediaTitle: "近江鉄道100形電車 (2代)",
+    photo: { commonsFile: "File:Ohmi-102.JPG" },
+    sources: [wikipedia("近江鉄道100形電車 (2代)")],
     aliases: ["ひゃくがた", "おうみてつどう"],
   },
   {
@@ -178,7 +209,6 @@ export const trains: Train[] = [
     network: "ohmi",
     name: "900形《がた》 あかね号《ごう》",
     kana: "きゅうひゃくがた あかねごう",
-    maxSpeed: 85,
     debutYear: 2013,
     // 塗装は「クリームを基調とし、赤と青のライン」（先代700系から継承）
     bodyColor: "#f2e8d5",
@@ -190,6 +220,12 @@ export const trains: Train[] = [
     ],
     lineIds: ["ohmi-main", "ohmi-yokaichi"],
     wikipediaTitle: "近江鉄道900形電車",
+    // 記事の代表画像は旧「淡海号」塗装のままなので、現行のあかね号塗装を指定する
+    photo: {
+      commonsFile: "File:Ohmi 901 Musa 20200205.jpg",
+      note: "2019年《ねん》に ぬりかえた あとの すがた",
+    },
+    sources: [wikipedia("近江鉄道900形電車"), wikipedia("近江鉄道700系電車")],
     aliases: ["あかねごう", "あかね", "きゅうひゃくがた"],
   },
   {
@@ -197,17 +233,18 @@ export const trains: Train[] = [
     network: "ohmi",
     name: "800系《けい》",
     kana: "はっぴゃくけい",
-    maxSpeed: 85,
     debutYear: 1991,
-    bodyColor: "#ffffff",
-    stripeColor: "#e2661a",
+    bodyColor: "#f5d800",
+    stripeColor: "#e0a800",
     secrets: [
-      "いろいろな ラッピング（絵《え》）が かかれていて、見《み》るたびに ちがうよ。",
-      "こちらも もとは 西武鉄道《せいぶてつどう》の 電車《でんしゃ》。",
-      "本線《ほんせん》・多賀線《たがせん》・八日市線《ようかいちせん》の どこでも 会《あ》えるよ。",
+      "西武《せいぶ》時代《じだい》と 同《おな》じ 黄色《きいろ》 一色《いっしょく》が、標準《ひょうじゅん》の 色《いろ》だよ。",
+      "広告《こうこく》の ラッピングを した 編成《へんせい》も いて、見《み》るたびに ちがうよ。",
+      "近江鉄道《おうみてつどう》の 線路《せんろ》は、彦根《ひこね》〜八日市《ようかいち》が 70キロ、ほかは 60キロまで 出《だ》せるよ。",
     ],
     lineIds: ["ohmi-main", "ohmi-taga", "ohmi-yokaichi"],
     wikipediaTitle: "近江鉄道800系電車",
+    photo: { commonsFile: "File:OHMI809.jpeg" },
+    sources: [wikipedia("近江鉄道800系電車"), wikipedia("近江鉄道本線")],
     aliases: ["はっぴゃくけい", "はちひゃくけい"],
   },
 ];

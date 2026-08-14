@@ -16,6 +16,17 @@ export interface WikiImage {
   extract: string | null;
 }
 
+/** Commons の写真1枚と、その表示に必要なクレジット情報 */
+export interface CommonsPhoto {
+  file: string;
+  imageUrl: string | null;
+  descriptionUrl: string | null;
+  artist: string | null;
+  license: string | null;
+  licenseUrl: string | null;
+  attributionRequired: boolean;
+}
+
 async function getJson<T>(path: string, signal?: AbortSignal): Promise<T | null> {
   try {
     const res = await fetch(`${BASE}${path}`, { signal });
@@ -26,9 +37,14 @@ async function getJson<T>(path: string, signal?: AbortSignal): Promise<T | null>
   }
 }
 
-/** 車両名・駅名から Wikipedia の代表画像を取得する */
+/** 車両名・駅名から Wikipedia の代表画像を取得する（写真を指定していないとき用） */
 export function fetchImage(title: string, signal?: AbortSignal) {
   return getJson<WikiImage>(`/image?title=${encodeURIComponent(title)}`, signal);
+}
+
+/** Commons のファイルを指定して、写真とクレジットを取得する */
+export function fetchPhoto(file: string, signal?: AbortSignal) {
+  return getJson<CommonsPhoto>(`/photo?file=${encodeURIComponent(file)}`, signal);
 }
 
 /** 動的テキストにルビ記法（かんじ|よみ）を振ってもらう */

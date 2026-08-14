@@ -8,6 +8,29 @@ export type RubyString = string;
 
 export type NetworkId = "shinkansen" | "jrwest" | "ohmi";
 
+/**
+ * 記述の出典。データを増やすときは必ず1つ以上つける。
+ * 「誰かが書いた説明文」と「裏の取れた事実」を区別できなくなるのを防ぐため。
+ */
+export interface Citation {
+  /** 出典の名前（例: "Wikipedia 近江鉄道900形電車"） */
+  title: string;
+  url: string;
+}
+
+/**
+ * Wikimedia Commons の写真。
+ *
+ * 記事の「代表画像」は予告なく差し替わるので、ファイルを直接指定する。
+ * （900形は代表画像が旧「淡海号」塗装のままで、現在の姿と食い違っていた）
+ */
+export interface Photo {
+  /** Commons のファイル名。"File:" 接頭辞つき */
+  commonsFile: string;
+  /** 何が写っているかの補足（塗装違いなど）。省略可 */
+  note?: RubyString;
+}
+
 export interface Network {
   id: NetworkId;
   /** カテゴリー名（ルビ付き） */
@@ -29,8 +52,12 @@ export interface Train {
    * 音声検索の照合と、画像の代替テキスト（読み上げ）に使う。
    */
   kana: string;
-  /** 最高速度 km/h */
-  maxSpeed: number;
+  /**
+   * 最高速度 km/h。**裏の取れた値だけ入れる。**
+   * 未確認なら省略する（UIは速度の欄を出さない）。
+   * 適当な数値を置くと、子どもがそれを事実として覚えてしまうため。
+   */
+  maxSpeed?: number;
   /** デビュー年 */
   debutYear: number;
   /** 車体のイメージカラー（イラスト用） */
@@ -41,8 +68,12 @@ export interface Train {
   secrets: RubyString[];
   /** 走っている路線ID */
   lineIds: string[];
-  /** Wikipedia(ja) の記事タイトル。画像取得プロキシのキーに使う */
+  /** Wikipedia(ja) の記事タイトル。photo 未指定のときの画像取得キーも兼ねる */
   wikipediaTitle: string;
+  /** 表示する写真。未指定なら wikipediaTitle の代表画像にフォールバックする */
+  photo?: Photo;
+  /** secrets や諸元の裏付け */
+  sources: Citation[];
   /** 音声検索でヒットさせたい読み（ひらがな） */
   aliases: string[];
 }

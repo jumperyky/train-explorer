@@ -13,8 +13,12 @@ import { fileURLToPath } from "node:url";
 const SRC = join(dirname(fileURLToPath(import.meta.url)), "..", "src");
 const TOKEN = /(?:｜([^｜《》]+)|([一-鿿々〆ヶ]+))《([^《》]+)》/g;
 
-/** 漢字1文字あたりの読みは、長くてもこのくらい（訓読みの長いものを考慮） */
-const MAX_KANA_PER_KANJI = 3;
+/**
+ * 読みの長さの上限（目安）。
+ * 漢字1文字は訓読みが長くなりうるので緩め（弟=おとうと、志=こころざし）。
+ * 2文字以上は熟語なので、1文字あたり3かなを超えたら送り仮名を巻き込んだ疑い。
+ */
+const maxKana = (base) => (base.length === 1 ? 5 : base.length * 3);
 
 function* walk(dir) {
   for (const entry of readdirSync(dir)) {
@@ -37,7 +41,7 @@ for (const file of walk(SRC)) {
 
 const suspects = [];
 for (const [token, { base, reading }] of seen) {
-  if (reading.length > base.length * MAX_KANA_PER_KANJI) suspects.push(token);
+  if (reading.length > maxKana(base)) suspects.push(token);
 }
 
 console.log(`tokens: ${seen.size}`);

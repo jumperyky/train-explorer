@@ -9,6 +9,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "check:data": "node scripts/check-data.mjs",
+    "check:ruby": "node scripts/check-ruby.mjs",
+    "check": "npm run typecheck && npm run check:data && npm run check:ruby && npm run lint",
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
