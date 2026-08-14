@@ -97,6 +97,14 @@ export interface Station {
   lng: number;
   /** 記事名が「駅名+駅」でない場合だけ指定する（座標の取得キー） */
   wikipediaTitle?: string;
+  /**
+   * Wikidata の項目ID（Q…）。指定すると座標はここから取る。
+   *
+   * 「京阪石山駅」のように、記事が隣接するJR駅の記事へリダイレクトしている駅は、
+   * Wikipedia から取るとJR駅の座標になり、地図上でピンが完全に重なってしまう。
+   * Wikidata には駅ごとに項目があるので、そちらを使う。
+   */
+  wikidataId?: string;
   /** 地図に出現するズームレベルのしきい値（これ以上のズームで表示） */
   minZoom: number;
 }

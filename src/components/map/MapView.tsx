@@ -13,7 +13,13 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { CircleMarker as LeafletCircleMarker, Map as LeafletMap } from "leaflet";
-import { lines, linesAtStation, networkMap, networks } from "@/data/lines";
+import {
+  lines,
+  linesAtStation,
+  nearbyStations,
+  networkMap,
+  networks,
+} from "@/data/lines";
 import { stationMap, stations } from "@/data/stations";
 import type { Line, NetworkId, Station } from "@/data/types";
 import { trainsOnLine } from "@/data/trains";
@@ -232,6 +238,7 @@ function StationPopup({
     );
   }, [station.id]);
 
+  const nearby = useMemo(() => nearbyStations(station.id), [station.id]);
   const [lineId, setLineId] = useState(() => primaryLineOf(station.id)?.id);
   const line = linesHere.find((l) => l.id === lineId) ?? linesHere[0];
 
@@ -284,6 +291,27 @@ function StationPopup({
             <RubyText text={line.name} />
           </p>
         )
+      )}
+
+      {/* すぐそばにある別の駅。ピンが重なって選べないので、ここから行き来する */}
+      {nearby.length > 0 && (
+        <div className="mt-2">
+          <p className="ruby-line text-center text-sm text-[#1f4fb6]">
+            <RubyText text="🚶 あるいて のりかえ できる 駅《えき》" />
+          </p>
+          <div className="mt-1 flex flex-wrap justify-center gap-1">
+            {nearby.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => onGoToStation(s.id)}
+                className="ruby-line rounded-full border-2 border-[#1f4fb6] bg-white px-2 py-1 text-sm text-[#1f4fb6] transition active:scale-95"
+              >
+                <RubyText text={s.name} />
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* この路線を走る電車。タップで「ずかん」の詳細へ */}

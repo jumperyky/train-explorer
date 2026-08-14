@@ -1,4 +1,5 @@
-import type { Line, Network, NetworkId } from "./types";
+import type { Line, Network, NetworkId, Station } from "./types";
+import { stationMap, stations } from "./stations";
 import { wikipedia } from "./citations";
 
 /**
@@ -548,4 +549,40 @@ export function linesOfNetwork(network: NetworkId): Line[] {
 /** ある駅を通る路線を返す */
 export function linesAtStation(stationId: string): Line[] {
   return lines.filter((l) => l.stationIds.includes(stationId));
+}
+
+/** 2点間の距離（メートル） */
+function distanceMeters(a: Station, b: Station): number {
+  const R = 6371000;
+  const rad = (d: number) => (d * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/**
+ * すぐそばにある別の駅。
+ *
+ * 「石山」と「京阪石山」のように、名前が違うので別の駅として持っているが
+ * 歩いて乗りかえられる組がある。地図では数十メートルしか離れておらず
+ * ピンが重なって片方を選べないので、駅どうしを行き来できるようにする。
+ *
+ * 同じ路線の隣の駅（400m程度しか離れていない区間がある）は、乗りかえでは
+ * ないので除く。
+ */
+export function nearbyStations(stationId: string, maxMeters = 300): Station[] {
+  const here = stationMap[stationId];
+  if (!here) return [];
+  const myLines = new Set(linesAtStation(stationId).map((l) => l.id));
+
+  return stations
+    .filter((s) => s.id !== stationId)
+    .filter((s) => !linesAtStation(s.id).some((l) => myLines.has(l.id)))
+    .map((s) => ({ station: s, m: distanceMeters(here, s) }))
+    .filter((x) => x.m <= maxMeters)
+    .sort((a, b) => a.m - b.m)
+    .map((x) => x.station);
 }

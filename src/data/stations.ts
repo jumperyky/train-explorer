@@ -199,13 +199,13 @@ const list: Station[] = [
   // 取り込みスクリプトが拾った読みが別の駅のものだったため手で直している
   { id: "ishiyamadera", name: "石山寺《いしやまでら》", kana: "いしやまでら", romaji: "Ishiyamadera", lat: 34.967069, lng: 135.903381, minZoom: 12 },
   { id: "karahashimae", name: "唐橋前《からはしまえ》", kana: "からはしまえ", romaji: "Karahashimae", lat: 34.973728, lng: 135.902978, minZoom: 12 },
-  { id: "keihan-ishiyama", name: "京阪石山《けいはんいしやま》", kana: "けいはんいしやま", romaji: "Keihan-Ishiyama", lat: 34.979939, lng: 135.900247, minZoom: 11 },
+  { id: "keihan-ishiyama", name: "京阪石山《けいはんいしやま》", wikidataId: "Q11375858", kana: "けいはんいしやま", romaji: "Keihan-Ishiyama", lat: 34.979639, lng: 135.899653, minZoom: 10 },
   { id: "awazu", name: "粟津《あわづ》", wikipediaTitle: "粟津駅 (滋賀県)", kana: "あわづ", romaji: "Awazu", lat: 34.985033, lng: 135.895467, minZoom: 12 },
   { id: "kawaragahama", name: "瓦ヶ浜《かわらがはま》", kana: "かわらがはま", romaji: "Kawaragahama", lat: 34.988572, lng: 135.893906, minZoom: 12 },
   { id: "nakanosho", name: "｜中ノ庄《なかのしょう》", kana: "なかのしょう", romaji: "Nakanosho", lat: 34.991528, lng: 135.891558, minZoom: 12 },
   { id: "zezehommachi", name: "膳所本町《ぜぜほんまち》", kana: "ぜぜほんまち", romaji: "Zezehommachi", lat: 34.995106, lng: 135.88935, minZoom: 12 },
   { id: "nishiki", name: "錦《にしき》", kana: "にしき", romaji: "Nishiki", lat: 34.997497, lng: 135.885897, minZoom: 12 },
-  { id: "keihan-zeze", name: "京阪膳所《けいはんぜぜ》", kana: "けいはんぜぜ", romaji: "Keihan-Zeze", lat: 34.999419, lng: 135.881042, minZoom: 12 },
+  { id: "keihan-zeze", name: "京阪膳所《けいはんぜぜ》", wikidataId: "Q11375864", kana: "けいはんぜぜ", romaji: "Keihan-Zeze", lat: 34.9997, lng: 135.880939, minZoom: 11 },
   { id: "ishiba", name: "石場《いしば》", kana: "いしば", romaji: "Ishiba", lat: 35.004989, lng: 135.875386, minZoom: 12 },
   { id: "shimanoseki", name: "｜島ノ関《しまのせき》", kana: "しまのせき", romaji: "Shimanoseki", lat: 35.007808, lng: 135.870617, minZoom: 12 },
   { id: "biwako-hamaotsu", name: "｜びわ湖浜大津《びわこはまおおつ》", kana: "びわこはまおおつ", romaji: "Biwako-Hamaotsu", lat: 35.011356, lng: 135.863839, minZoom: 11 },
@@ -221,7 +221,7 @@ const list: Station[] = [
 
   // ===== 京阪京津線（御陵〜びわ湖浜大津） =====
   { id: "misasagi", name: "御陵《みささぎ》", kana: "みささぎ", romaji: "Misasagi", lat: 34.996122, lng: 135.801622, minZoom: 11 },
-  { id: "keihan-yamashina", name: "京阪山科《けいはんやましな》", kana: "けいはんやましな", romaji: "Keihan-Yamashina", lat: 34.992336, lng: 135.817083, minZoom: 11 },
+  { id: "keihan-yamashina", name: "京阪山科《けいはんやましな》", wikidataId: "Q11375846", kana: "けいはんやましな", romaji: "Keihan-Yamashina", lat: 34.991942, lng: 135.816847, minZoom: 10 },
   { id: "shinomiya", name: "四宮《しのみや》", kana: "しのみや", romaji: "Shinomiya", lat: 34.991847, lng: 135.824236, minZoom: 12 },
   { id: "oiwake", name: "追分《おいわけ》", wikipediaTitle: "追分駅 (滋賀県)", kana: "おいわけ", romaji: "Oiwake", lat: 34.991533, lng: 135.837197, minZoom: 12 },
   { id: "otani", name: "大谷《おおたに》", wikipediaTitle: "大谷駅 (滋賀県)", kana: "おおたに", romaji: "Otani", lat: 34.994128, lng: 135.853692, minZoom: 12 },

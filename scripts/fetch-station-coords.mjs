@@ -97,6 +97,30 @@ async function fetchCoords(titles) {
 }
 
 /**
+ * Wikidata から座標を取る。
+ * 記事が隣の駅へリダイレクトしてしまう駅（京阪石山駅 → 石山駅 など）は、
+ * Wikipedia 経由だと隣の駅の座標になってピンが重なる。
+ */
+async function fromWikidata(qid) {
+  const url =
+    "https://www.wikidata.org/w/api.php?" +
+    new URLSearchParams({
+      action: "wbgetclaims",
+      format: "json",
+      property: "P625",
+      entity: qid,
+    });
+  const res = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const v = data.claims?.P625?.[0]?.mainsnak?.datavalue?.value;
+  if (!v) return null;
+  return { lat: round(v.latitude), lng: round(v.longitude), article: qid };
+}
+
+/**
  * 記事名で引けなかった駅の救済。
  * 「草津駅」のように全国に同名がある駅は曖昧さ回避ページになっていて座標が無い。
  * 概算座標のまわりを geosearch して、駅名を含む記事を拾う。
@@ -154,14 +178,29 @@ try {
   const titleOf = (s) => s.wikipediaTitle ?? `${toPlainText(s.name)}駅`;
 
   const results = [];
-  for (let i = 0; i < stations.length; i += BATCH) {
-    const chunk = stations.slice(i, i + BATCH);
+
+  // wikidataId が指定されている駅は、そちらを優先する
+  const byWikidata = stations.filter((s) => s.wikidataId);
+  const wikipediaOnly = stations.filter((s) => !s.wikidataId);
+  for (const s of byWikidata) {
+    const hit = await fromWikidata(s.wikidataId);
+    results.push({ station: s, title: s.wikidataId, hit });
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  if (byWikidata.length) {
+    console.log(`Wikidata から ${byWikidata.length}駅を取得しました`);
+  }
+
+  for (let i = 0; i < wikipediaOnly.length; i += BATCH) {
+    const chunk = wikipediaOnly.slice(i, i + BATCH);
     const found = await fetchCoords(chunk.map(titleOf));
     for (const s of chunk) {
       const hit = found.get(titleOf(s));
       results.push({ station: s, title: titleOf(s), hit });
     }
-    process.stdout.write(`\r取得中 ${Math.min(i + BATCH, stations.length)}/${stations.length}`);
+    process.stdout.write(
+      `\r取得中 ${Math.min(i + BATCH, wikipediaOnly.length)}/${wikipediaOnly.length}`,
+    );
     await new Promise((r) => setTimeout(r, 400));
   }
   process.stdout.write("\n");

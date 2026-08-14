@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { linesAtStation } from "@/data/lines";
+import { linesAtStation, nearbyStations } from "@/data/lines";
 import type { Line, Station } from "@/data/types";
 import RubyText from "@/components/RubyText";
 import StationSign from "@/components/StationSign";
@@ -138,6 +138,34 @@ export default function LineClient({
                   </span>
                   <span className="block text-base text-foreground/50">{s.romaji}</span>
                 </button>
+
+                {/* すぐそばの別名の駅（石山 ⇔ 京阪石山 など）。距離から計算する */}
+                {nearbyStations(s.id).length > 0 && (
+                  <div
+                    className={[
+                      "mt-1 flex flex-wrap items-center gap-1 pl-1",
+                      stops ? "" : "pointer-events-none",
+                    ].join(" ")}
+                  >
+                    <span className="ruby-line text-base text-[#1f4fb6]">
+                      <RubyText text="🚶 あるいて のりかえ" />
+                    </span>
+                    {nearbyStations(s.id).map((other) => {
+                      const line = linesAtStation(other.id)[0];
+                      return (
+                        <Link
+                          key={other.id}
+                          href={`/map?station=${other.id}`}
+                          tabIndex={stops ? undefined : -1}
+                          className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
+                          style={{ background: line?.color ?? "#1f4fb6" }}
+                        >
+                          <RubyText text={other.name} />
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* 乗りかえ。データから計算するので、路線を足せば自動で増える */}
                 {transfersOf(s.id).length > 0 && (
