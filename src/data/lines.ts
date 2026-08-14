@@ -1,9 +1,12 @@
 import type { Line, Network, NetworkId } from "./types";
+import { wikipedia } from "./citations";
 
 /**
- * 路線・列車種別マスタ（MVPモックデータ）。
- * 停車駅は「日中の代表的なパターン」を採用している（時間帯によって実際は変わる）。
- * 将来 ODPT API の StationTimetable / TrainTimetable で置き換える想定。
+ * 路線・列車種別マスタ。
+ *
+ * **停車駅は「日中の代表的なパターン」**で、時間帯・曜日によって実際は変わる。
+ * ここだけは出典で裏を取れていない（ODPT / GTFS で置き換えるのが本筋）。
+ * 一方、description に書いた事実は sources で裏を取る。
  */
 
 export const networks: Network[] = [
@@ -98,6 +101,7 @@ export const lines: Line[] = [
         description:
           "いちばん 速《はや》い 新幹線《しんかんせん》。東京《とうきょう》から 新大阪《しんおおさか》まで 約《やく》2時間《じかん》30分《ぷん》！",
         stops: ["tokyo", "shinagawa", "shin-yokohama", "nagoya", "kyoto", "shin-osaka"],
+        sources: [wikipedia("のぞみ (列車)")],
       },
       {
         id: "hikari",
@@ -110,6 +114,7 @@ export const lines: Line[] = [
           "tokyo", "shinagawa", "shin-yokohama", "shizuoka", "hamamatsu",
           "nagoya", "kyoto", "shin-osaka",
         ],
+        sources: [wikipedia("ひかり (列車)")],
       },
       {
         id: "kodama",
@@ -119,8 +124,10 @@ export const lines: Line[] = [
         description:
           "全部《ぜんぶ》の 駅《えき》に 止《と》まる 新幹線《しんかんせん》。ゆっくり 旅《たび》が できるよ。",
         stops: SHINKANSEN,
+        sources: [wikipedia("こだま (列車)")],
       },
     ],
+    sources: [wikipedia("東海道新幹線")],
   },
   {
     id: "biwako",
@@ -152,12 +159,14 @@ export const lines: Line[] = [
         kana: "しんかいそく",
         color: "#e5342a",
         description: "とっても 速《はや》い！ 130キロで 走《はし》る 人気者《にんきもの》だよ。",
+        sources: [wikipedia("新快速")],
         stops: [
           "maibara", "hikone", "notogawa", "omi-hachiman", "yasu", "moriyama",
           "kusatsu", "minami-kusatsu", "ishiyama", "otsu", "yamashina", "kyoto",
         ],
       },
     ],
+    sources: [wikipedia("琵琶湖線")],
   },
   {
     id: "jr-kyoto",
@@ -194,8 +203,10 @@ export const lines: Line[] = [
         color: "#e5342a",
         description: "京都《きょうと》から 大阪《おおさか》まで たったの 3駅《えき》！ ビュンと 走《はし》るよ。",
         stops: ["kyoto", "takatsuki", "shin-osaka", "osaka"],
+        sources: [wikipedia("新快速")],
       },
     ],
+    sources: [wikipedia("JR京都線")],
   },
   {
     id: "jr-kobe",
@@ -238,8 +249,10 @@ export const lines: Line[] = [
           "osaka", "amagasaki", "ashiya", "sannomiya", "motomachi", "kobe",
           "akashi", "nishi-akashi", "kakogawa", "himeji",
         ],
+        sources: [wikipedia("新快速")],
       },
     ],
+    sources: [wikipedia("JR神戸線")],
   },
   {
     id: "ohmi-main",
@@ -258,6 +271,7 @@ export const lines: Line[] = [
         stops: OHMI_MAIN,
       },
     ],
+    sources: [wikipedia("近江鉄道本線")],
   },
   {
     id: "ohmi-taga",
@@ -277,6 +291,7 @@ export const lines: Line[] = [
         stops: OHMI_TAGA,
       },
     ],
+    sources: [wikipedia("近江鉄道多賀線")],
   },
   {
     id: "ohmi-yokaichi",
@@ -296,6 +311,7 @@ export const lines: Line[] = [
         stops: OHMI_YOKAICHI,
       },
     ],
+    sources: [wikipedia("近江鉄道八日市線")],
   },
 ];
 

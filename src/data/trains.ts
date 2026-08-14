@@ -1,4 +1,5 @@
-import type { Citation, Train } from "./types";
+import type { Train } from "./types";
+import { wikipedia } from "./citations";
 
 /**
  * 車両マスタ。
@@ -10,12 +11,6 @@ import type { Citation, Train } from "./types";
  *    差し替わり、塗装の違う写真になることがある（900形で実際に起きた）
  *  - bodyColor / stripeColor は内蔵イラスト用。写真と同じ塗装に合わせる
  */
-
-/** Wikipedia(ja) の記事を出典として書くためのヘルパー */
-const wikipedia = (title: string): Citation => ({
-  title: `Wikipedia「${title}」`,
-  url: `https://ja.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g, "_"))}`,
-});
 
 export const trains: Train[] = [
   // ===== 東海道新幹線 =====

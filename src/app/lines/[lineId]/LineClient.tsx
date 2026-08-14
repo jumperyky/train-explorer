@@ -6,6 +6,7 @@ import RubyText from "@/components/RubyText";
 import StationSign from "@/components/StationSign";
 import { trainsOnLine } from "@/data/trains";
 import TrainPhoto from "@/components/TrainPhoto";
+import SourceList from "@/components/SourceList";
 
 /**
  * 機能B: 路線ごとの駅一覧＋種別による停車駅の切り替え。
@@ -161,6 +162,12 @@ export default function LineClient({
           </ul>
         </section>
       )}
+
+      {/* 出典。停車駅そのものはまだ裏が取れていないので、そこは正直に書く */}
+      <SourceList
+        sources={[...line.sources, ...(type.sources ?? [])]}
+        note="停車駅《ていしゃえき》は 日中《にっちゅう》の 代表的《だいひょうてき》な パターンです（時間帯《じかんたい》によって 変《か》わります）。"
+      />
 
       {/* 駅名標モーダル */}
       {signStation && (

@@ -13,7 +13,8 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = mkdtempSync(join(tmpdir(), "train-explorer-data-"));
@@ -29,20 +30,22 @@ try {
       join("src", "data", "lines.ts"),
       join("src", "data", "trains.ts"),
       "--outDir", out,
-      "--module", "esnext",
+      // CommonJS で出す。ESM だと tsc が "./citations" を拡張子なしで書き出し、
+      // Node の ESM 解決が通らない
+      "--module", "commonjs",
+      "--moduleResolution", "node",
       "--target", "es2022",
-      "--moduleResolution", "bundler",
       "--skipLibCheck",
     ],
     { cwd: ROOT, stdio: "inherit" },
   );
 
-  const load = async (name) =>
-    import(pathToFileURL(join(out, `${name}.js`)).href);
+  const require = createRequire(import.meta.url);
+  const load = (name) => require(join(out, `${name}.js`));
 
-  const { stations } = await load("stations");
-  const { lines, networks } = await load("lines");
-  const { trains } = await load("trains");
+  const { stations } = load("stations");
+  const { lines, networks } = load("lines");
+  const { trains } = load("trains");
 
   const errors = [];
   const warnings = [];
@@ -76,6 +79,9 @@ try {
       if (!stationIds.has(id)) errors.push(`路線 ${line.id}: 存在しない駅ID ${id}`);
     }
     if (line.types.length === 0) errors.push(`路線 ${line.id}: 種別が1つもない`);
+    if (!line.sources || line.sources.length === 0) {
+      errors.push(`路線 ${line.id}: 出典 (sources) が空`);
+    }
 
     const belongs = new Set(line.stationIds);
     for (const type of line.types) {

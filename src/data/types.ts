@@ -86,8 +86,11 @@ export interface Station {
   kana: string;
   /** ローマ字（駅名標用） */
   romaji: string;
+  /** 緯度。scripts/fetch-station-coords.mjs が Wikipedia(ja) から取り込む */
   lat: number;
   lng: number;
+  /** 記事名が「駅名+駅」でない場合だけ指定する（座標の取得キー） */
+  wikipediaTitle?: string;
   /** 地図に出現するズームレベルのしきい値（これ以上のズームで表示） */
   minZoom: number;
   /** 乗りかえできる路線ID */
@@ -105,6 +108,8 @@ export interface TrainType {
   stops: string[];
   /** 子ども向けの説明 */
   description: RubyString;
+  /** description の裏付け。路線側の sources に足して表示される */
+  sources?: Citation[];
 }
 
 export interface Line {
@@ -118,4 +123,6 @@ export interface Line {
   stationIds: string[];
   /** 列車種別 */
   types: TrainType[];
+  /** 路線と種別の説明の裏付け */
+  sources: Citation[];
 }
