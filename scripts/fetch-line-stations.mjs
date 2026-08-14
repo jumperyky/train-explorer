@@ -211,18 +211,32 @@ console.log(`${pageTitle}: ${stationArticles.length}駅を検出`);
 // 読み・英語版記事名をまとめて取得（titles は50件まで）
 const readings = new Map();
 const englishNames = new Map();
+const coords = new Map();
 const redirected = [];
+
+/** 2点間の距離（メートル） */
+function distanceMeters(a, b) {
+  const R = 6371000;
+  const rad = (d) => (d * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
 for (let i = 0; i < stationArticles.length; i += 20) {
   const chunk = stationArticles.slice(i, i + 20);
   const data = await api({
     action: "query",
     redirects: "1",
-    prop: "extracts|langlinks",
+    prop: "extracts|langlinks|coordinates",
     explaintext: "1",
     exintro: "1",
     exlimit: "20",
     lllang: "en",
     lllimit: "max",
+    colimit: "max",
     titles: chunk.join("|"),
   });
   const alias = new Map();
@@ -236,6 +250,8 @@ for (let i = 0; i < stationArticles.length; i += 20) {
   for (const page of data.query?.pages ?? []) {
     const key = alias.get(page.title) ?? page.title;
     readings.set(key, readingFromExtract(page.extract, page.title));
+    const c = page.coordinates?.[0];
+    if (c) coords.set(key, { lat: c.lat, lng: c.lon });
     const en = page.langlinks?.[0]?.title;
     // 英語版は Shigarakigūshi のようにマクロン付き。既存データ（Otsu, Kyoto）に
     // 合わせて長音記号は落とす
@@ -250,8 +266,10 @@ for (let i = 0; i < stationArticles.length; i += 20) {
 
 const existing = loadExistingStations();
 const existingByName = new Map(
-  existing.map((s) => [s.name.replace(/[｜]|《[^》]*》/g, ""), s.id]),
+  existing.map((s) => [s.name.replace(/[｜]|《[^》]*》/g, ""), s]),
 );
+/** 同名でも別の駅なら統合してはいけない距離 */
+const SAME_STATION_METERS = 600;
 
 const rows = [];
 const reused = [];
@@ -262,12 +280,26 @@ const usedIds = new Set(existing.map((s) => s.id));
 for (const article of stationArticles) {
   const plainName = (displayOf.get(article) ?? article).replace(/駅$/, "");
   const kana = readings.get(article);
-  const existingId = existingByName.get(plainName);
+  const sameName = existingByName.get(plainName);
 
-  if (existingId) {
-    reused.push({ id: existingId, name: plainName });
-    orderedIds.push(existingId);
-    continue;
+  if (sameName) {
+    // 同じ名前でも別の駅のことがある（阪急曽根と姫路のJR曽根、
+    // 近鉄大久保と明石のJR大久保など）。座標が近いときだけ同一とみなす。
+    const here = coords.get(article);
+    const far =
+      here && sameName.lat !== 0
+        ? distanceMeters(here, sameName) > SAME_STATION_METERS
+        : false;
+
+    if (!far) {
+      reused.push({ id: sameName.id, name: plainName });
+      orderedIds.push(sameName.id);
+      continue;
+    }
+    console.warn(
+      `  [別駅] ${plainName} は既存の ${sameName.id} と同名ですが ` +
+        `${Math.round(distanceMeters(here, sameName))}m 離れています。別の駅として作ります`,
+    );
   }
 
   // 「京阪山科駅」が [[山科駅|京阪山科駅]] のように別の駅の記事へ張られていると、
@@ -285,7 +317,8 @@ for (const article of stationArticles) {
   let id =
     romaji.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") ||
     `${idPrefix}-station`;
-  if (idPrefix && usedIds.has(id)) id = `${idPrefix}-${id}`;
+  // 同名の別駅とぶつかるときは事業者名を前に付けて区別する
+  if (idPrefix && (usedIds.has(id) || sameName)) id = `${idPrefix}-${id}`;
   let n = 2;
   while (usedIds.has(id)) id = `${id}-${n++}`;
 

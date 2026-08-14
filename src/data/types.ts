@@ -12,7 +12,9 @@ export type NetworkId =
   | "ohmi"
   | "keihan"
   | "kyoto-subway"
-  | "shigaraki";
+  | "shigaraki"
+  | "hankyu"
+  | "kintetsu";
 
 /**
  * 記述の出典。データを増やすときは必ず1つ以上つける。

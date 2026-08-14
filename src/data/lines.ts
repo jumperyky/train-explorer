@@ -53,6 +53,20 @@ export const networks: Network[] = [
     color: "#e5007f",
     emoji: "🚝",
   },
+  {
+    id: "hankyu",
+    name: "阪急電車《はんきゅうでんしゃ》",
+    formalName: "阪急電鉄《はんきゅうでんてつ》",
+    color: "#7a1f2b",
+    emoji: "🚟",
+  },
+  {
+    id: "kintetsu",
+    name: "近鉄《きんてつ》",
+    formalName: "近畿日本鉄道《きんきにっぽんてつどう》",
+    color: "#c8501e",
+    emoji: "🚈",
+  },
 ];
 
 export const networkMap: Record<NetworkId, Network> = Object.fromEntries(
@@ -144,6 +158,44 @@ const TOZAI = [
 const SHIGARAKI = [
   "kibukawa", "shigarakigushi", "kumoi", "chokushi", "gyokukeijimae",
   "shigaraki",
+];
+
+const HANKYU_KOBE = [
+  "osakaumeda", "nakatsu", "juso", "kanzakigawa", "sonoda", "tsukaguchi",
+  "mukonoso", "nishinomiya-kitaguchi", "shukugawa", "ashiyagawa", "okamoto",
+  "mikage", "rokko", "oji-koen", "kasuganomichi", "kobesannomiya",
+];
+
+const HANKYU_TAKARAZUKA = [
+  "osakaumeda", "nakatsu", "juso", "mikuni", "shonai", "hattori-tenjin",
+  "hankyu-sone", "okamachi", "toyonaka", "hotarugaike", "ishibashi-handai-mae",
+  "ikeda", "kawanishi-noseguchi", "hibarigaoka-hanayashiki", "yamamoto",
+  "nakayama-kannon", "mefu-jinja", "kiyoshikojin", "takarazuka",
+];
+
+const HANKYU_KYOTO = [
+  "osakaumeda", "juso", "minamikata", "sozenji", "awaji", "kami-shinjo",
+  "aikawa", "shojaku", "settsu-shi", "minami-ibaraki", "ibaraki-shi", "sojiji",
+  "tonda", "takatsuki-shi", "kammaki", "minase", "oyamazaki",
+  "nishiyama-tennozan", "nagaoka-tenjin", "nishi-muko", "higashi-muko",
+  "rakusaiguchi", "katsura", "nishi-kyogoku", "saiin", "omiya", "karasuma",
+  "kyoto-kawaramachi",
+];
+
+const KINTETSU_KYOTO = [
+  "kyoto", "toji", "kintetsu-jujo", "kamitobaguchi", "takeda", "fushimi",
+  "kintetsu-tambabashi", "momoyamagoryo-mae", "mukaijima", "ogura", "iseda",
+  "kintetsu-okubo", "kutsukawa", "terada", "tonosho", "shin-tanabe", "kodo",
+  "miyamaki", "kintetsu-miyazu", "komada", "shin-hosono", "kizugawadai",
+  "yamadagawa", "takanohara", "heijo", "yamato-saidaiji",
+];
+
+const KINTETSU_NARA = [
+  "osaka-namba", "nippombashi", "osaka-uehommachi", "tsuruhashi", "imazato",
+  "fuse", "kawachi-eiwa", "kawachi-kosaka", "yaenosato", "wakae-iwata",
+  "kawachi-hanazono", "higashi-hanazono", "hyotan-yama", "hiraoka", "nukata",
+  "ishikiri", "ikoma", "higashi-ikoma", "tomio", "gakuen-mae", "ayameike",
+  "yamato-saidaiji", "shin-omiya", "kintetsu-nara",
 ];
 
 // ---------- 路線 ----------
@@ -532,6 +584,223 @@ export const lines: Line[] = [
     ],
     sources: [wikipedia("信楽高原鐵道信楽線")],
   },
+
+  // ===== 阪急電車 =====
+  {
+    id: "hankyu-kobe",
+    network: "hankyu",
+    name: "神戸本線《こうべほんせん》",
+    kana: "こうべほんせん",
+    color: "#7a1f2b",
+    stationIds: HANKYU_KOBE,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: HANKYU_KOBE,
+      },
+      {
+        id: "kyuko",
+        name: "急行《きゅうこう》",
+        kana: "きゅうこう",
+        color: "#f08a5d",
+        description: "特急《とっきゅう》より こまめに 止《と》まる 列車《れっしゃ》。",
+        stops: [
+          "osakaumeda", "juso", "tsukaguchi", "nishinomiya-kitaguchi",
+          "shukugawa", "ashiyagawa", "okamoto", "mikage", "rokko", "oji-koen",
+          "kasuganomichi", "kobesannomiya",
+        ],
+        sources: [wikipedia("阪急神戸本線")],
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "大阪梅田《おおさかうめだ》から 神戸三宮《こうべさんのみや》まで、たったの 6駅《えき》！",
+        stops: [
+          "osakaumeda", "juso", "nishinomiya-kitaguchi", "shukugawa", "okamoto",
+          "kobesannomiya",
+        ],
+        sources: [wikipedia("阪急神戸本線")],
+      },
+    ],
+    sources: [wikipedia("阪急神戸本線")],
+  },
+  {
+    id: "hankyu-takarazuka",
+    network: "hankyu",
+    name: "宝塚本線《たからづかほんせん》",
+    kana: "たからづかほんせん",
+    color: "#a03c4a",
+    stationIds: HANKYU_TAKARAZUKA,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: HANKYU_TAKARAZUKA,
+      },
+      {
+        id: "kyuko",
+        name: "急行《きゅうこう》",
+        kana: "きゅうこう",
+        color: "#f08a5d",
+        description:
+          "宝塚《たからづか》まで 行《い》く、こまめに 止《と》まる 速《はや》い 列車《れっしゃ》。",
+        stops: [
+          "osakaumeda", "juso", "toyonaka", "hotarugaike", "ishibashi-handai-mae",
+          "ikeda", "kawanishi-noseguchi", "hibarigaoka-hanayashiki", "yamamoto",
+          "nakayama-kannon", "mefu-jinja", "kiyoshikojin", "takarazuka",
+        ],
+        sources: [wikipedia("阪急宝塚本線")],
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "川西能勢口《かわにしのせぐち》までを 5駅《えき》で むすぶ、いちばん 速《はや》い 列車《れっしゃ》。",
+        stops: [
+          "osakaumeda", "juso", "ishibashi-handai-mae", "ikeda",
+          "kawanishi-noseguchi",
+        ],
+        sources: [wikipedia("阪急宝塚本線")],
+      },
+    ],
+    sources: [wikipedia("阪急宝塚本線")],
+  },
+  {
+    id: "hankyu-kyoto",
+    network: "hankyu",
+    name: "京都本線《きょうとほんせん》",
+    kana: "きょうとほんせん",
+    color: "#5d2b3a",
+    stationIds: HANKYU_KYOTO,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: HANKYU_KYOTO,
+      },
+      {
+        id: "kyuko",
+        name: "急行《きゅうこう》",
+        kana: "きゅうこう",
+        color: "#f08a5d",
+        description: "特急《とっきゅう》より こまめに 止《と》まる 列車《れっしゃ》。",
+        stops: [
+          "osakaumeda", "juso", "minamikata", "awaji", "kami-shinjo",
+          "minami-ibaraki", "ibaraki-shi", "takatsuki-shi", "nagaoka-tenjin",
+          "katsura", "nishi-kyogoku", "saiin", "omiya", "karasuma",
+          "kyoto-kawaramachi",
+        ],
+        sources: [wikipedia("阪急京都本線")],
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "大阪梅田《おおさかうめだ》から 京都河原町《きょうとかわらまち》を 9駅《えき》で むすぶよ。",
+        stops: [
+          "osakaumeda", "juso", "awaji", "ibaraki-shi", "takatsuki-shi",
+          "nagaoka-tenjin", "katsura", "karasuma", "kyoto-kawaramachi",
+        ],
+        sources: [wikipedia("阪急京都本線")],
+      },
+    ],
+    sources: [wikipedia("阪急京都本線")],
+  },
+
+  // ===== 近鉄 =====
+  {
+    id: "kintetsu-kyoto",
+    network: "kintetsu",
+    name: "近鉄京都線《きんてつきょうとせん》",
+    kana: "きんてつきょうとせん",
+    color: "#c8501e",
+    stationIds: KINTETSU_KYOTO,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description:
+          "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。竹田《たけだ》からは 地下鉄《ちかてつ》の 電車《でんしゃ》も 走《はし》るんだ。",
+        stops: KINTETSU_KYOTO,
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "京都《きょうと》から 奈良《なら》や 伊勢《いせ》へ 向《む》かう、座席《ざせき》を 予約《よやく》する 特急《とっきゅう》。",
+        stops: ["kyoto", "kintetsu-tambabashi", "yamato-saidaiji"],
+        sources: [wikipedia("近鉄京都線")],
+      },
+    ],
+    sources: [wikipedia("近鉄京都線")],
+  },
+  {
+    id: "kintetsu-nara",
+    network: "kintetsu",
+    name: "近鉄奈良線《きんてつならせん》",
+    kana: "きんてつならせん",
+    color: "#e07a2f",
+    stationIds: KINTETSU_NARA,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: KINTETSU_NARA,
+      },
+      {
+        id: "kaisoku-kyuko",
+        name: "快速急行《かいそくきゅうこう》",
+        kana: "かいそくきゅうこう",
+        color: "#f08a5d",
+        description:
+          "大阪難波《おおさかなんば》から 近鉄奈良《きんてつなら》まで、10駅《えき》で 走《はし》りぬけるよ。",
+        stops: [
+          "osaka-namba", "nippombashi", "osaka-uehommachi", "tsuruhashi",
+          "higashi-hanazono", "ikoma", "gakuen-mae", "yamato-saidaiji",
+          "shin-omiya", "kintetsu-nara",
+        ],
+        sources: [wikipedia("近鉄奈良線")],
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "座席《ざせき》を 予約《よやく》して のる 特急《とっきゅう》。止《と》まる 駅《えき》は 6つだけ。",
+        stops: [
+          "osaka-namba", "osaka-uehommachi", "tsuruhashi", "ikoma", "gakuen-mae",
+          "kintetsu-nara",
+        ],
+        sources: [wikipedia("近鉄奈良線")],
+      },
+    ],
+    sources: [wikipedia("近鉄奈良線")],
+  },
 ];
 
 export const lineMap: Record<string, Line> = Object.fromEntries(
@@ -573,7 +842,7 @@ function distanceMeters(a: Station, b: Station): number {
  * 同じ路線の隣の駅（400m程度しか離れていない区間がある）は、乗りかえでは
  * ないので除く。
  */
-export function nearbyStations(stationId: string, maxMeters = 300): Station[] {
+export function nearbyStations(stationId: string, maxMeters = 350): Station[] {
   const here = stationMap[stationId];
   if (!here) return [];
   const myLines = new Set(linesAtStation(stationId).map((l) => l.id));
