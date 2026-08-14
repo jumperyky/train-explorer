@@ -5,7 +5,9 @@
  * アプリが壊れないように、失敗はすべて null で返す（内蔵イラストにフォールバック）。
  * ベースURLは NEXT_PUBLIC_API_BASE_URL で差し替えられる（未設定なら同一オリジンの /api/py）。
  */
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/py";
+// ?? ではなく || を使う。Vercel は .env.example から変数を「空文字」で
+// 作ることがあり、?? だと空文字がそのまま採用されてURLが壊れるため。
+const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/py";
 
 export interface WikiImage {
   title: string;

@@ -41,29 +41,48 @@ app = FastAPI(
     openapi_url="/api/py/openapi.json",
 )
 
+def env(name: str, default: str) -> str:
+    """
+    環境変数を読む。**未設定だけでなく空文字も既定値に倒す。**
+
+    os.environ.get(name, default) だと、キーが存在して値が空のときに ""
+    が返る。Vercel は .env.example を取り込むと変数を空で作ることがあり、
+    それで float("") がインポート時に例外を投げて関数ごと 500 になった。
+    """
+    return os.environ.get(name, "").strip() or default
+
+
+def env_number(name: str, default: float) -> float:
+    """数値の環境変数。空でも壊れた値でも既定値に倒す（設定ミスで落とさない）。"""
+    try:
+        return float(env(name, str(default)))
+    except ValueError:
+        return default
+
+
 # ローカルで Next.js(3000) から叩けるように緩めに許可する。
 # 本番は同一オリジン(rewrites経由)なので CORS は実質使われない。
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ.get("CORS_ALLOW_ORIGINS", "*").split(","),
+    allow_origins=env("CORS_ALLOW_ORIGINS", "*").split(","),
     allow_methods=["GET"],
     allow_headers=["*"],
 )
 
 # Wikimedia は User-Agent ポリシーが厳しく、連絡先の無いUAは 403 になる。
-# 公開時は WIKI_USER_AGENT に自分の連絡先(URLかメール)を入れて上書きすること。
-USER_AGENT = os.environ.get(
+# フォークするなど連絡先を変えたいときだけ WIKI_USER_AGENT で上書きする。
+USER_AGENT = env(
     "WIKI_USER_AGENT",
     "train-explorer/0.1 (https://github.com/jumperyky/train-explorer) python-httpx",
 )
 WIKI_API = "https://ja.wikipedia.org/api/rest_v1/page/summary/{title}"
-ODPT_BASE = os.environ.get("ODPT_BASE_URL", "https://api.odpt.org/api/v4")
+ODPT_BASE = env("ODPT_BASE_URL", "https://api.odpt.org/api/v4")
 
 # ---------------------------------------------------------------- キャッシュ
 # Serverless の同一インスタンスが生きている間だけ効く、素朴なTTLキャッシュ。
 # 本格運用時は Vercel KV / Upstash 等に差し替える。
 _CACHE: dict[str, tuple[float, Any]] = {}
-_CACHE_TTL = float(os.environ.get("CACHE_TTL_SECONDS", "3600"))
+_CACHE_TTL = env_number("CACHE_TTL_SECONDS", 3600)
 
 
 def cache_get(key: str) -> Any | None:
@@ -89,7 +108,7 @@ def health() -> dict[str, Any]:
     return {
         "status": "ok",
         "ruby_engine": "pykakasi" if _kakasi() else "unavailable",
-        "odpt_token_configured": bool(os.environ.get("ODPT_ACCESS_TOKEN")),
+        "odpt_token_configured": bool(env("ODPT_ACCESS_TOKEN", "")),
     }
 
 
@@ -168,7 +187,7 @@ class ImageResponse(BaseModel):
 
 
 _THUMB_WIDTH_RE = re.compile(r"/(\d+)px-")
-IMAGE_WIDTH = int(os.environ.get("IMAGE_WIDTH", "800"))
+IMAGE_WIDTH = int(env_number("IMAGE_WIDTH", 800))
 
 
 def _resize(url: str | None) -> str | None:
@@ -226,7 +245,7 @@ async def odpt(resource: str, request_params: str | None = None) -> Any:
     ODPT_ACCESS_TOKEN が未設定のうちは 503 を返し、
     フロントはモックデータのまま動き続ける。
     """
-    token = os.environ.get("ODPT_ACCESS_TOKEN")
+    token = env("ODPT_ACCESS_TOKEN", "")
     if not token:
         raise HTTPException(
             status_code=503,
