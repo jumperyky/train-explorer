@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# でんしゃ・えき たんけんたい 🚄🚃🚞
 
-## Getting Started
+電車を詳しく知りたい5歳児向けの、本格鉄道アプリ（MVP）。
+実在する路線・車両の情報をベースに、すべての漢字にふりがなを振って表示します。
 
-First, run the development server:
+対象は3ネットワーク:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| ネットワーク | 路線 | 種別 |
+| --- | --- | --- |
+| 東海道新幹線 | 東京〜新大阪 | のぞみ／ひかり／こだま |
+| JR西日本 在来線 | 琵琶湖線・JR京都線・JR神戸線 | 普通／快速／新快速 |
+| 近江鉄道 | 本線・多賀線・八日市線 | 普通 |
+
+## 機能
+
+| | 機能 | 実装状況 |
+| --- | --- | --- |
+| A | でんしゃずかん（一覧＋詳細モーダル「でんしゃのひみつ」） | ✅ |
+| B | 路線・駅名ガイド（種別ごとの停車駅、駅名標、通過アニメーション） | ✅ |
+| C | わくわく鉄道マップ（ズームで駅が増える実地図） | ✅ |
+| D | 車掌さんマイク（音声検索でずかん／路線／マップへジャンプ） | ✅ |
+| E | 外部詳細ページ | Phase1（アプリ内モックのみ） |
+| F | PWA（manifest / Service Worker / ホーム画面追加） | ✅ |
+
+## 構成
+
+```
+src/
+  app/                 Next.js App Router のページ
+    page.tsx           ホーム（＋車掌さんマイク）
+    zukan/             機能A ずかん
+    lines/             機能B 路線一覧・路線詳細
+    map/               機能C 地図
+    offline/           オフライン時のフォールバック
+  components/          RubyText / StationSign / ConductorMic / TrainArt など
+  data/                モックデータ（stations / lines / trains）
+  lib/                 ルビ記法パーサ・検索・APIクライアント
+api/index.py           FastAPI（Vercel の Python Serverless Function）
+public/                manifest.webmanifest / sw.js / アイコン
+scripts/               PWAアイコン生成スクリプト
+docs/requirements.md   元の要件定義
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### ふりがなの持ち方
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+アプリ内のテキストは**すべて漢字＋ルビ**で統一しています。
+記法は青空文庫式の `漢字《よみ》`（親文字は `《》` の直前の漢字の連なり）。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```ts
+name: "東海道《とうかいどう》新幹線《しんかんせん》"   // 東海道(とうかいどう)新幹線(しんかんせん)
+name: "223系《けい》"                                 // ルビは 系 だけに付く
+"電車《でんしゃ》が 走《はし》っている"                 // 送り仮名・助詞はルビの外
+name: "｜三ノ宮《さんのみや》"                         // ｜ で親文字の始まりを明示できる
+```
 
-## Learn More
+`《》` で読みの範囲が閉じるのが要点です。区切りのない `漢字|よみ` 形式だと
+「電車|でんしゃの」のようにルビが助詞まで飲み込んでしまうため、この記法にしています。
 
-To learn more about Next.js, take a look at the following resources:
+`<RubyText text={...} />` が `<ruby>` に変換して描画します（[src/lib/ruby.ts](src/lib/ruby.ts)）。
+ODPT などの動的テキストは、バックエンドの `/api/py/ruby`（pykakasi）が同じ記法を返します。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+記法の点検はスクリプトで行えます（読みが送り仮名を飲み込んでいないかの目安チェック）。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+node scripts/check-ruby.mjs
+```
 
-## Deploy on Vercel
+## 開発
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 1. フロントエンド
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+npm run dev
+```
+
+http://localhost:3000 が開きます。**バックエンドが起動していなくても動きます**
+（写真は内蔵SVGイラストにフォールバック）。
+
+### 2. バックエンド（任意）
+
+```bash
+python -m venv .venv
+.venv/Scripts/python -m pip install -r requirements.txt
+npm run dev:api
+```
+
+http://127.0.0.1:8000/api/py/docs に Swagger UI が出ます。
+`next.config.ts` の rewrites により、フロントの `/api/py/*` が自動でここへ流れます。
+
+`npm run dev:api` は `.venv` の Python を優先して使います（PATH のグローバルPythonだと
+requirements.txt を入れていない環境で動いてしまうため）。ポートを変えたいときは
+`API_PORT=8001 npm run dev:api`。
+
+起動時に `WinError 10013` / `Address already in use` が出るときは、
+すでに 8000番で別のプロセスが動いています。掴んでいるプロセスはこれで分かります。
+
+```bash
+netstat -ano | findstr :8000
+```
+
+| エンドポイント | 内容 |
+| --- | --- |
+| `GET /api/py/health` | 疎通確認 |
+| `GET /api/py/ruby?text=` | pykakasi で `漢字《よみ》` 記法に変換 |
+| `GET /api/py/image?title=` | Wikipedia の代表画像URLを取得（TTLキャッシュ付き） |
+| `GET /api/py/odpt/{resource}` | ODPT APIのラッパー（トークン未設定なら 503） |
+
+### このPC特有の注意
+
+TLS検査ソフトが入っているため、Node / Python からの外部HTTPSが証明書エラーになることがあります。
+
+- Node: `$env:NODE_OPTIONS = "--use-system-ca"` を付けて起動
+- Python: `api/index.py` が `truststore` でOSの証明書ストアを使うようにしてあるので対応済み
+- pip: 失敗する場合は `--trusted-host pypi.org --trusted-host files.pythonhosted.org`
+
+## 環境変数
+
+`.env.example` をコピーして `.env.local` を作成（キーは絶対にコミットしない）。
+
+| 変数 | 用途 | 未設定時 |
+| --- | --- | --- |
+| `ODPT_ACCESS_TOKEN` | 公共交通オープンデータセンター | モックデータのまま動作 |
+| `WIKI_USER_AGENT` | Wikimedia の UAポリシー対応（連絡先必須） | このリポジトリのURL入りUA（設定不要） |
+| `IMAGE_WIDTH` | 取得する写真の横幅 | 800 |
+| `CACHE_TTL_SECONDS` | バックエンドのキャッシュ秒数 | 3600 |
+| `API_ORIGIN` | バックエンドを別サービスに置く場合のオリジン | Vercelの同居Functionを使用 |
+
+## デプロイ（Vercel）
+
+フロント（Next.js）とバックエンド（FastAPI）を**同じVercelプロジェクトに同居**させる構成です。
+別サービスを管理せずに済み、MVPとしては一番手軽です。
+
+1. リポジトリを GitHub に push
+2. Vercel で Import。Framework は Next.js が自動検出される
+3. `api/index.py` は `vercel.json` の設定で Python Serverless Function としてビルドされ、
+   ルートの `requirements.txt` から依存が入る
+4. Project Settings → Environment Variables に `.env.example` の変数を設定
+5. Deploy
+
+`next.config.ts` の rewrites が `/api/py/*` を Function に向けるので、
+フロントのコードは開発でも本番でも同じパスを叩けます。
+
+> バックエンドを Render 等に分離したくなったら、`API_ORIGIN` を設定するだけで rewrites の
+> 向き先が切り替わります（フロントの変更は不要）。
+
+### タブレットへのインストール（PWA）
+
+1. デプロイ後のURLをタブレットのブラウザで開く
+2. Android Chrome: メニュー →「アプリをインストール」
+   iPad Safari: 共有 →「ホーム画面に追加」
+3. アイコンから起動すると URLバー・戻るボタンのないフルスクリーンで動きます
+   （アプリ内の大きな「◀」で戻れます）
+
+音声認識（車掌さんマイク）は **HTTPS または localhost でのみ** 動作します。
+
+## MVPで割り切っていること
+
+- 停車駅は「日中の代表パターン」の固定データ。時間帯・曜日による違いは未対応
+- 駅の緯度経度はおおよその値（ODPT連携時に正確な値へ差し替える想定）
+- 画像は Wikipedia の代表画像。取得できない車両は内蔵SVGイラストで表示
+- 地図タイルは OpenStreetMap の公式タイル。アクセスが増えるならタイル提供元の検討が必要
+- 機能E（外部詳細ページ）はアプリ内モックのみ。ホワイトリスト方式は Phase2
+
+## アイコンの作り直し
+
+```bash
+npm run icons
+```
+
+[scripts/generate-icons.mjs](scripts/generate-icons.mjs) が `public/icons/` のPNGを再生成します。

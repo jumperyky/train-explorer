@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+/*
+ * 5歳児向けのデザイントークン。
+ * ダークモードには追従しない（配色をいつも同じにして混乱を防ぐため）。
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eaf4ff;
+  --foreground: #14304d;
+  --card: #ffffff;
+  --shinkansen: #0b57d0;
+  --jrwest: #1e9e5a;
+  --ohmi: #e2661a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-shinkansen: var(--shinkansen);
+  --color-jrwest: var(--jrwest);
+  --color-ohmi: var(--ohmi);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* iOS で文字が勝手に大きくならないように */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at 12% 8%, #ffffff 0%, transparent 40%),
+    radial-gradient(circle at 88% 4%, #ffffff 0%, transparent 35%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", "Hiragino Sans",
+    "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  font-weight: 700;
+  /* 誤タップ時の選択・長押しメニューを抑える */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior-y: none;
+}
+
+/* ルビを大きめに。ふつうは 50% だがブラウザ差があるので明示する */
+ruby.ruby-lg > rt {
+  font-size: 0.5em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: inherit;
+  opacity: 0.75;
+  ruby-align: center;
+}
+
+/* 行間を広めにしてルビが重ならないようにする */
+.ruby-line {
+  line-height: 2;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+.animate-wiggle {
+  animation: wiggle 1.6s ease-in-out infinite;
+}
+
+@keyframes pass-through {
+  0% { transform: translateX(-120%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+.animate-pass-through {
+  animation: pass-through 1.1s ease-in-out;
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.22s ease-out;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(229, 52, 42, 0.55); }
+  100% { box-shadow: 0 0 0 28px rgba(229, 52, 42, 0); }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 1.2s ease-out infinite;
+}
+
+/* Leaflet のピンをアプリの雰囲気に合わせる */
+.leaflet-container {
+  font-family: inherit;
+  background: #dceaf7;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 1.25rem;
+}
+.leaflet-popup-content {
+  margin: 0.75rem 0.9rem;
 }
