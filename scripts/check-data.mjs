@@ -56,6 +56,28 @@ try {
 
   const dup = (ids) => ids.filter((id, i) => ids.indexOf(id) !== i);
 
+  // 出典URLはホワイトリスト内でなければならない（要件 機能E）。
+  // 外れたURLは UI 上ただの文字になり、リンクとして機能しないので、
+  // 「出典を書いたのに辿れない」状態を作らないためここで止める。
+  const ALLOWED_HOSTS = ["ja.wikipedia.org", "commons.wikimedia.org", "creativecommons.org"];
+  const checkSources = (label, sources) => {
+    for (const s of sources ?? []) {
+      let host = null;
+      try {
+        const u = new URL(s.url);
+        host = u.protocol === "https:" ? u.hostname : null;
+      } catch {
+        host = null;
+      }
+      if (!host || !ALLOWED_HOSTS.includes(host)) {
+        errors.push(
+          `${label}: 許可されていない出典URL ${s.url}` +
+            `（許可: ${ALLOWED_HOSTS.join(", ")}。src/lib/safeLink.ts と揃える）`,
+        );
+      }
+    }
+  };
+
   for (const [label, ids] of [
     ["駅", stations.map((s) => s.id)],
     ["路線", lines.map((l) => l.id)],
@@ -75,6 +97,10 @@ try {
     if (line.types.length === 0) errors.push(`路線 ${line.id}: 種別が1つもない`);
     if (!line.sources || line.sources.length === 0) {
       errors.push(`路線 ${line.id}: 出典 (sources) が空`);
+    }
+    checkSources(`路線 ${line.id}`, line.sources);
+    for (const type of line.types) {
+      checkSources(`路線 ${line.id} の種別 ${type.id}`, type.sources);
     }
 
     const belongs = new Set(line.stationIds);
@@ -114,6 +140,7 @@ try {
     if (!t.sources || t.sources.length === 0) {
       errors.push(`車両 ${t.id}: 出典 (sources) が空`);
     }
+    checkSources(`車両 ${t.id}`, t.sources);
     if (t.secrets.length === 0) warnings.push(`車両 ${t.id}: secrets が空`);
     if (!t.photo) {
       warnings.push(`車両 ${t.id}: photo 未指定 — 記事の代表画像に依存します`);

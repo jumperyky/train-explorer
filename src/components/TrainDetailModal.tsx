@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { Train } from "@/data/types";
+import { commonsFileUrl } from "@/lib/safeLink";
 import { networkMap, lineMap } from "@/data/lines";
 import RubyText from "./RubyText";
 import TrainPhoto from "./TrainPhoto";
@@ -122,12 +124,14 @@ export default function TrainDetailModal({
               const line = lineMap[id];
               if (!line) return null;
               return (
-                <li
-                  key={id}
-                  className="ruby-line rounded-full px-3 py-2 text-lg text-white"
-                  style={{ background: line.color }}
-                >
-                  <RubyText text={line.name} />
+                <li key={id}>
+                  <Link
+                    href={`/lines/${line.id}`}
+                    className="ruby-line block rounded-full px-3 py-2 text-lg text-white shadow transition active:scale-95"
+                    style={{ background: line.color }}
+                  >
+                    <RubyText text={line.name} />
+                  </Link>
                 </li>
               );
             })}
@@ -155,7 +159,21 @@ export default function TrainDetailModal({
             </div>
           )}
 
-          <SourceList sources={train.sources} />
+          {/* 写真の解説ページ（ライセンス条文もここにある）も出典に含める。
+              画像の上のクレジットはリンクにしていないため、辿れる先はここだけ */}
+          <SourceList
+            sources={[
+              ...train.sources,
+              ...(train.photo
+                ? [
+                    {
+                      title: "写真: Wikimedia Commons",
+                      url: commonsFileUrl(train.photo.commonsFile),
+                    },
+                  ]
+                : []),
+            ]}
+          />
         </div>
       </div>
     </div>

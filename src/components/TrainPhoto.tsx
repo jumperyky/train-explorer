@@ -43,7 +43,7 @@ export default function TrainPhoto({
         onError={() => setFailed(true)}
         className={`${className ?? ""} object-cover`}
       />
-      <PhotoCredit photo={photo} className="absolute bottom-1 right-2 text-right" />
+      <PhotoCredit photo={photo} className="absolute bottom-1 right-2 block text-right" />
     </span>
   );
 }

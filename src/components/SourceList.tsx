@@ -1,11 +1,17 @@
+"use client";
+
 import type { Citation, RubyString } from "@/data/types";
 import RubyText from "./RubyText";
+import ExternalLink from "./ExternalLink";
 
 /**
  * 出典の一覧。
  * 説明文は人が書くしかない（子ども向けの解説を配信するデータベースは存在しない）ので、
  * せめて「どこで裏を取ったか」を大人が辿れるようにしておく。
- * 子どもの読む領域ではないので、意図的に小さく地味に出す。
+ *
+ * 子どもの読む領域ではないので、意図的に小さく地味に出し、ふりがなも振らない。
+ * リンクは ExternalLink 経由（ホワイトリスト＋保護者確認）で、
+ * 直接 <a> を置かない。
  */
 export default function SourceList({
   sources,
@@ -21,28 +27,28 @@ export default function SourceList({
   const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
 
   return (
-    <details className="ruby-line mt-6 text-sm text-foreground/50">
+    <details className="mt-6 text-sm text-foreground/50">
       <summary className="cursor-pointer select-none">出典</summary>
       {note && (
-        <p className="mt-2">
+        <p className="ruby-line mt-2">
           <RubyText text={note} />
         </p>
       )}
       <ul className="mt-2 flex flex-col gap-1">
         {unique.map((s) => (
           <li key={s.url}>
-            <a
+            <ExternalLink
               href={s.url}
-              target="_blank"
-              rel="noreferrer"
-              className="underline underline-offset-2"
-              onClick={(e) => e.stopPropagation()}
+              className="text-left underline underline-offset-2"
             >
               {s.title}
-            </a>
+            </ExternalLink>
           </li>
         ))}
       </ul>
+      <p className="mt-2 text-xs text-foreground/40">
+        リンクを開くには保護者の方の確認が必要です。
+      </p>
     </details>
   );
 }

@@ -136,8 +136,14 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
       >
         <MapRefBinder mapRef={mapRef} />
         <ZoomWatcher onZoom={setZoom} />
+        {/*
+          既定のクレジットは <a> でOSMのサイトに出られてしまう。
+          子どもが地図の隅を誤タップしただけで外に出るのは避けたいので、
+          帰属表示は文字だけにする（表示義務は満たしたうえで導線を断つ）。
+          ライセンスの詳細は README に記載。
+        */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution="&copy; OpenStreetMap contributors (ODbL)"
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
