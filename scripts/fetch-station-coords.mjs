@@ -171,6 +171,9 @@ try {
   if (unresolved.length > 0) {
     console.log(`記事名で引けなかった ${unresolved.length}駅を、位置から検索します…`);
     for (const r of unresolved) {
+      // 座標がまだ 0 の駅は探す起点が無いので、位置検索は使えない。
+      // wikipediaTitle を手で書いて記事を直接指すこと
+      if (r.station.lat === 0 && r.station.lng === 0) continue;
       r.hit = await geosearch(r.station, toPlainText(r.station.name));
       if (r.hit) r.resolvedBy = "geosearch";
       await new Promise((t) => setTimeout(t, 350));
@@ -191,6 +194,14 @@ try {
     if (resolvedBy === "geosearch") {
       renamed.push({ station, article: hit.article });
     }
+    // lat/lng が 0 の駅は「まだ座標を入れていない新規駅」。
+    // 比べる相手が無いので距離チェックはかけず、そのまま採用する
+    const isNew = station.lat === 0 && station.lng === 0;
+    if (isNew) {
+      updates.push({ station, hit, km: 0 });
+      continue;
+    }
+
     const km = distanceKm(station, hit);
     if (km > MAX_DRIFT_KM) {
       drifted.push(`${station.id} (${title}): ${km.toFixed(1)}km — 別の駅の可能性`);

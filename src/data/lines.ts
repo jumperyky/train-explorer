@@ -31,6 +31,27 @@ export const networks: Network[] = [
     color: "#e2661a",
     emoji: "🚞",
   },
+  {
+    id: "keihan",
+    name: "京阪電車《けいはんでんしゃ》",
+    formalName: "京阪電気鉄道《けいはんでんきてつどう》",
+    color: "#0e7a3c",
+    emoji: "🚋",
+  },
+  {
+    id: "kyoto-subway",
+    name: "京都市営地下鉄《きょうとしえいちかてつ》",
+    formalName: "京都市営地下鉄《きょうとしえいちかてつ》",
+    color: "#7a2fa0",
+    emoji: "🚇",
+  },
+  {
+    id: "shigaraki",
+    name: "信楽高原鐵道《しがらきこうげんてつどう》",
+    formalName: "信楽高原鐵道《しがらきこうげんてつどう》",
+    color: "#e5007f",
+    emoji: "🚝",
+  },
 ];
 
 export const networkMap: Record<NetworkId, Network> = Object.fromEntries(
@@ -80,6 +101,48 @@ const OHMI_TAGA = ["takamiya", "screen", "taga-taisha-mae"];
 const OHMI_YOKAICHI = [
   "omi-hachiman", "musa", "hirata", "ichinobe", "tarobogu-mae", "shin-yokaichi",
   "yokaichi",
+];
+
+// 京阪本線・鴨東線（淀屋橋〜出町柳）。記事の駅一覧が鴨東線まで通しなので1路線にする
+const KEIHAN_MAIN = [
+  "yodoyabashi", "kitahama", "temmabashi", "kyobashi", "noe", "sekime",
+  "morishoji", "sembayashi", "takii", "doi", "moriguchishi", "nishisanso",
+  "kadoma-shi", "furukawabashi", "owada", "kayashima", "neyagawashi", "korien",
+  "kozenji", "hirakata-koen", "hirakatashi", "goten-yama", "makino", "kuzuha",
+  "hashimoto", "iwashimizu-hachimangu", "yodo", "chushojima", "fushimi-momoyama",
+  "tambabashi", "sumizome", "fujinomori", "ryukokudai-mae-fukakusa",
+  "fushimi-inari", "toba-kaido", "tofukuji", "shichijo", "kiyomizu-gojo",
+  "gion-shijo", "sanjo", "jingu-marutamachi", "demachiyanagi",
+];
+
+const KEIHAN_ISHIYAMAZAKA = [
+  "ishiyamadera", "karahashimae", "keihan-ishiyama", "awazu", "kawaragahama",
+  "nakanosho", "zezehommachi", "nishiki", "keihan-zeze", "ishiba", "shimanoseki",
+  "biwako-hamaotsu", "miidera", "otsu-shiyakusho-mae", "keihan-otsukyo",
+  "omijingumae", "minami-shiga", "shigasato", "ano", "matsunobamba",
+  "sakamoto-hieizanguchi",
+];
+
+const KEIHAN_KEISHIN = [
+  "misasagi", "keihan-yamashina", "shinomiya", "oiwake", "otani",
+  "kamisakaemachi", "biwako-hamaotsu",
+];
+
+const KARASUMA = [
+  "kokusaikaikan", "matsugasaki", "kitayama", "kitaoji", "kuramaguchi",
+  "imadegawa", "marutamachi", "karasuma-oike", "shijo", "gojo", "kyoto", "kujo",
+  "jujo", "kuinabashi", "takeda",
+];
+
+const TOZAI = [
+  "rokujizo", "ishida", "daigo", "ono", "nagitsuji", "higashino", "yamashina",
+  "misasagi", "keage", "higashiyama", "sanjo-keihan", "kyoto-shiyakusho-mae",
+  "karasuma-oike", "nijojo-mae", "nijo", "nishioji-oike", "uzumasa-tenjingawa",
+];
+
+const SHIGARAKI = [
+  "kibukawa", "shigarakigushi", "kumoi", "chokushi", "gyokukeijimae",
+  "shigaraki",
 ];
 
 // ---------- 路線 ----------
@@ -312,6 +375,161 @@ export const lines: Line[] = [
       },
     ],
     sources: [wikipedia("近江鉄道八日市線")],
+  },
+
+  // ===== 京阪電車 =====
+  {
+    id: "keihan-main",
+    network: "keihan",
+    name: "京阪本線《けいはんほんせん》・鴨東線《おうとうせん》",
+    kana: "けいはんほんせん おうとうせん",
+    color: "#0e7a3c",
+    stationIds: KEIHAN_MAIN,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#5b6b7a",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: KEIHAN_MAIN,
+      },
+      {
+        id: "kyuko",
+        name: "急行《きゅうこう》",
+        kana: "きゅうこう",
+        color: "#f08a5d",
+        description:
+          "普通《ふつう》より 速《はや》く、特急《とっきゅう》より こまめに 止《と》まる 列車《れっしゃ》。",
+        stops: [
+          "yodoyabashi", "kitahama", "temmabashi", "kyobashi", "moriguchishi",
+          "neyagawashi", "korien", "hirakata-koen", "hirakatashi", "kuzuha",
+          "iwashimizu-hachimangu", "yodo", "chushojima", "tambabashi",
+          "fushimi-inari", "shichijo", "kiyomizu-gojo", "gion-shijo", "sanjo",
+          "jingu-marutamachi", "demachiyanagi",
+        ],
+        sources: [wikipedia("京阪本線")],
+      },
+      {
+        id: "tokkyu",
+        name: "特急《とっきゅう》",
+        kana: "とっきゅう",
+        color: "#e5342a",
+        description:
+          "いちばん 速《はや》い 列車《れっしゃ》。2階建《かいだ》ての 車両《しゃりょう》が つながっていることも あるよ。",
+        stops: [
+          "yodoyabashi", "kitahama", "temmabashi", "kyobashi", "hirakatashi",
+          "kuzuha", "chushojima", "tambabashi", "shichijo", "gion-shijo",
+          "sanjo", "demachiyanagi",
+        ],
+        sources: [wikipedia("京阪特急")],
+      },
+    ],
+    sources: [wikipedia("京阪本線"), wikipedia("京阪鴨東線")],
+  },
+  {
+    id: "keihan-ishiyamazaka",
+    network: "keihan",
+    name: "石山坂本線《いしやまさかもとせん》",
+    kana: "いしやまさかもとせん",
+    color: "#0091d2",
+    stationIds: KEIHAN_ISHIYAMAZAKA,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#0091d2",
+        description:
+          "石山寺《いしやまでら》から 坂本比叡山口《さかもとひえいざんぐち》まで、琵琶湖《びわこ》の そばを 走《はし》るよ。",
+        stops: KEIHAN_ISHIYAMAZAKA,
+      },
+    ],
+    sources: [wikipedia("京阪石山坂本線")],
+  },
+  {
+    id: "keihan-keishin",
+    network: "keihan",
+    name: "京津線《けいしんせん》",
+    kana: "けいしんせん",
+    color: "#f39800",
+    stationIds: KEIHAN_KEISHIN,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#f39800",
+        description:
+          "地下鉄《ちかてつ》東西線《とうざいせん》に 乗《の》り入《い》れる、めずらしい 電車《でんしゃ》の 路線《ろせん》。",
+        stops: KEIHAN_KEISHIN,
+      },
+    ],
+    sources: [wikipedia("京阪京津線")],
+  },
+
+  // ===== 京都市営地下鉄 =====
+  {
+    id: "karasuma",
+    network: "kyoto-subway",
+    name: "烏丸線《からすません》",
+    kana: "からすません",
+    color: "#009944",
+    stationIds: KARASUMA,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#009944",
+        description:
+          "国際会館《こくさいかいかん》から 竹田《たけだ》まで、京都《きょうと》の 街《まち》を たてに つらぬく 地下鉄《ちかてつ》。",
+        stops: KARASUMA,
+      },
+    ],
+    sources: [wikipedia("京都市営地下鉄烏丸線")],
+  },
+  {
+    id: "tozai",
+    network: "kyoto-subway",
+    name: "東西線《とうざいせん》",
+    kana: "とうざいせん",
+    color: "#e8383d",
+    stationIds: TOZAI,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#e8383d",
+        description:
+          "六地蔵《ろくじぞう》から 太秦天神川《うずまさてんじんがわ》まで、京都《きょうと》を よこに つらぬく 地下鉄《ちかてつ》。",
+        stops: TOZAI,
+      },
+    ],
+    sources: [wikipedia("京都市営地下鉄東西線")],
+  },
+
+  // ===== 信楽高原鐵道 =====
+  {
+    id: "shigaraki",
+    network: "shigaraki",
+    name: "信楽線《しがらきせん》",
+    kana: "しがらきせん",
+    color: "#e5007f",
+    stationIds: SHIGARAKI,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#e5007f",
+        description:
+          "貴生川《きぶかわ》から 信楽《しがらき》まで、6つの 駅《えき》を むすぶ 単線《たんせん》の 路線《ろせん》。",
+        stops: SHIGARAKI,
+      },
+    ],
+    sources: [wikipedia("信楽高原鐵道信楽線")],
   },
 ];
 

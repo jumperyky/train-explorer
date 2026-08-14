@@ -13,7 +13,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { CircleMarker as LeafletCircleMarker, Map as LeafletMap } from "leaflet";
-import { lines, linesAtStation, networkMap } from "@/data/lines";
+import { lines, linesAtStation, networkMap, networks } from "@/data/lines";
 import { stationMap, stations } from "@/data/stations";
 import type { Line, NetworkId, Station } from "@/data/types";
 import { trainsOnLine } from "@/data/trains";
@@ -30,8 +30,12 @@ import TrainArt from "@/components/TrainArt";
 const INITIAL_CENTER: [number, number] = [35.05, 136.05];
 const INITIAL_ZOOM = 8;
 
-/** 複数路線の駅で、どの路線を最初に見せるか */
-const NETWORK_RANK: NetworkId[] = ["shinkansen", "jrwest", "ohmi"];
+/**
+ * 複数路線の駅で、どの路線を最初に見せるか。
+ * networks の宣言順をそのまま使う。ここに書き足すのを忘れて
+ * 新しい事業者が最優先になってしまう、という取りこぼしを防ぐため。
+ */
+const NETWORK_RANK: NetworkId[] = networks.map((n) => n.id);
 
 /** 駅がどのネットワークに属するか（ピンの色に使う） */
 const stationNetwork: Record<string, NetworkId> = (() => {

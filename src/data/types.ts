@@ -6,7 +6,13 @@
  */
 export type RubyString = string;
 
-export type NetworkId = "shinkansen" | "jrwest" | "ohmi";
+export type NetworkId =
+  | "shinkansen"
+  | "jrwest"
+  | "ohmi"
+  | "keihan"
+  | "kyoto-subway"
+  | "shigaraki";
 
 /**
  * 記述の出典。データを増やすときは必ず1つ以上つける。
