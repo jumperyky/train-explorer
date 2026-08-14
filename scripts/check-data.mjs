@@ -141,7 +141,10 @@ try {
       errors.push(`車両 ${t.id}: 出典 (sources) が空`);
     }
     checkSources(`車両 ${t.id}`, t.sources);
-    if (t.secrets.length === 0) warnings.push(`車両 ${t.id}: secrets が空`);
+    // 「でんしゃのひみつ」は子どもが読む中身そのもの。薄いと図鑑として物足りない
+    if (t.secrets.length < 3) {
+      warnings.push(`車両 ${t.id}: でんしゃのひみつが ${t.secrets.length}件 しかありません`);
+    }
     if (!t.photo) {
       warnings.push(`車両 ${t.id}: photo 未指定 — 記事の代表画像に依存します`);
     }
