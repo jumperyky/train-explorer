@@ -75,7 +75,7 @@ USER_AGENT = env(
     "WIKI_USER_AGENT",
     "train-explorer/0.1 (https://github.com/jumperyky/train-explorer) python-httpx",
 )
-WIKI_API = "https://ja.wikipedia.org/api/rest_v1/page/summary/{title}"
+WIKI_API = "https://ja.wikipedia.org/w/api.php"
 ODPT_BASE = env("ODPT_BASE_URL", "https://api.odpt.org/api/v4")
 
 # ---------------------------------------------------------------- キャッシュ
@@ -186,48 +186,62 @@ class ImageResponse(BaseModel):
     extract: str | None = None
 
 
-_THUMB_WIDTH_RE = re.compile(r"/(\d+)px-")
-IMAGE_WIDTH = int(env_number("IMAGE_WIDTH", 800))
-
-
-def _resize(url: str | None) -> str | None:
-    """
-    Wikimedia のサムネイルURL (.../320px-Foo.jpg) の幅を差し替える。
-    原寸はスマホには大きすぎ、既定のサムネは小さすぎるため。
-    """
-    if not url:
-        return None
-    return _THUMB_WIDTH_RE.sub(f"/{IMAGE_WIDTH}px-", url, count=1)
+# MediaWiki は要求幅を許可済みのサイズに切り上げる（480 → 500px, 約80KB）。
+# カードは高さ160px、詳細モーダルでも幅512pxなので500pxで足りる。
+# 640 を指定すると 960px・約200KB になり、11枚で2MBを超えてしまう。
+IMAGE_WIDTH = int(env_number("IMAGE_WIDTH", 480))
 
 
 @app.get("/api/py/image", response_model=ImageResponse)
 async def image(title: str = Query(..., min_length=1, max_length=120)) -> ImageResponse:
-    """車両名・駅名をキーに、日本語版Wikipediaの代表画像とみだし文を返す。"""
+    """
+    車両名・駅名をキーに、日本語版Wikipediaの代表画像とみだし文を返す。
+
+    サムネイルの幅は pithumbsize で MediaWiki に依頼する。
+    upload.wikimedia.org のURLを自前で書き換えてはいけない:
+    許可された幅以外は 400「Use thumbnail sizes listed on ...」で弾かれ、
+    しかも許可される幅は画像ごとに違う。MediaWiki に発行させれば必ず有効なURLになる。
+    """
     key = f"image:{title}"
     cached = cache_get(key)
     if cached is not None:
         return ImageResponse(**cached)
 
-    url = WIKI_API.format(title=quote(title.replace(" ", "_"), safe=""))
+    params = {
+        "action": "query",
+        "format": "json",
+        "formatversion": "2",
+        "redirects": "1",
+        "prop": "pageimages|extracts",
+        "piprop": "thumbnail",
+        "pithumbsize": str(IMAGE_WIDTH),
+        "exintro": "1",
+        "explaintext": "1",
+        "exsentences": "2",
+        "titles": title,
+    }
     try:
-        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
             res = await client.get(
-                url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"}
+                WIKI_API,
+                params=params,
+                headers={"User-Agent": USER_AGENT, "Accept": "application/json"},
             )
-        if res.status_code == 404:
+        res.raise_for_status()
+        pages = (res.json().get("query") or {}).get("pages") or []
+        page = pages[0] if pages else {}
+        if page.get("missing"):
             payload = ImageResponse(title=title).model_dump()
         else:
-            res.raise_for_status()
-            data = res.json()
-            thumb = data.get("thumbnail") or {}
-            original = data.get("originalimage") or {}
+            resolved = page.get("title") or title
+            thumb = page.get("thumbnail") or {}
             payload = ImageResponse(
                 title=title,
-                imageUrl=_resize(thumb.get("source")) or original.get("source"),
-                pageUrl=(data.get("content_urls", {}).get("desktop", {}) or {}).get("page"),
-                extract=data.get("extract"),
+                imageUrl=thumb.get("source"),
+                pageUrl=f"https://ja.wikipedia.org/wiki/{quote(resolved.replace(' ', '_'))}",
+                extract=page.get("extract"),
             ).model_dump()
-    except httpx.HTTPError:
+    except (httpx.HTTPError, ValueError, KeyError):
         # 画像が取れなくてもフロントは内蔵イラストにフォールバックする
         payload = ImageResponse(title=title).model_dump()
 
