@@ -1,7 +1,8 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   CircleMarker,
   MapContainer,
@@ -11,10 +12,10 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import type { Map as LeafletMap } from "leaflet";
-import { lines, networkMap } from "@/data/lines";
+import type { CircleMarker as LeafletCircleMarker, Map as LeafletMap } from "leaflet";
+import { lines, linesAtStation, networkMap } from "@/data/lines";
 import { stationMap, stations } from "@/data/stations";
-import type { NetworkId, Station } from "@/data/types";
+import type { Line, NetworkId, Station } from "@/data/types";
 import { trainsOnLine } from "@/data/trains";
 import RubyText from "@/components/RubyText";
 import StationSign from "@/components/StationSign";
@@ -23,19 +24,22 @@ import TrainArt from "@/components/TrainArt";
 /**
  * 機能C: わくわく鉄道マップ。
  * ズームレベルに応じて出てくる駅が増える（新幹線の主要駅 → JRの駅 → 近江鉄道の駅）。
+ * ポップアップから前後の駅をたどったり、乗りかえ路線に切り替えたりできる。
  */
 
 const INITIAL_CENTER: [number, number] = [35.05, 136.05];
 const INITIAL_ZOOM = 8;
 
-/** 駅がどのネットワークに属するか（複数なら 新幹線 > JR西 > 近江 の順で代表を決める） */
+/** 複数路線の駅で、どの路線を最初に見せるか */
+const NETWORK_RANK: NetworkId[] = ["shinkansen", "jrwest", "ohmi"];
+
+/** 駅がどのネットワークに属するか（ピンの色に使う） */
 const stationNetwork: Record<string, NetworkId> = (() => {
-  const rank: NetworkId[] = ["shinkansen", "jrwest", "ohmi"];
   const map: Record<string, NetworkId> = {};
   for (const line of lines) {
     for (const id of line.stationIds) {
       const cur = map[id];
-      if (!cur || rank.indexOf(line.network) < rank.indexOf(cur)) {
+      if (!cur || NETWORK_RANK.indexOf(line.network) < NETWORK_RANK.indexOf(cur)) {
         map[id] = line.network;
       }
     }
@@ -43,9 +47,28 @@ const stationNetwork: Record<string, NetworkId> = (() => {
   return map;
 })();
 
-/** 駅の代表路線（駅名標の 前／次 を出すために使う） */
-function primaryLineOf(stationId: string) {
-  return lines.find((l) => l.stationIds.includes(stationId));
+function primaryLineOf(stationId: string): Line | undefined {
+  const here = linesAtStation(stationId);
+  return [...here].sort(
+    (a, b) => NETWORK_RANK.indexOf(a.network) - NETWORK_RANK.indexOf(b.network),
+  )[0];
+}
+
+/**
+ * ピンが描画されるまで少し待ってからポップアップを開く。
+ * 移動先の駅がズームで隠れている場合、React が再描画するまでマーカーが存在しない。
+ */
+function openPopupWhenReady(
+  markers: Map<string, LeafletCircleMarker>,
+  id: string,
+  attempts = 40,
+) {
+  const marker = markers.get(id);
+  if (marker) {
+    marker.openPopup();
+    return;
+  }
+  if (attempts > 0) setTimeout(() => openPopupWhenReady(markers, id, attempts - 1), 16);
 }
 
 function ZoomWatcher({ onZoom }: { onZoom: (z: number) => void }) {
@@ -65,12 +88,32 @@ function MapRefBinder({ mapRef }: { mapRef: React.RefObject<LeafletMap | null> }
 
 export default function MapView({ focusStationId }: { focusStationId?: string | null }) {
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
+  const [focusId, setFocusId] = useState<string | null>(focusStationId ?? null);
   const mapRef = useRef<LeafletMap | null>(null);
+  const markerRefs = useRef(new Map<string, LeafletCircleMarker>());
 
-  const visible = useMemo(
-    () => stations.filter((s) => zoom >= s.minZoom),
-    [zoom],
-  );
+  /**
+   * 表示する駅。ズームで絞りこむが、たどっている駅だけは必ず出す。
+   * そうしないと、ズームが浅いときに移動先のピンが存在せずポップアップを開けない。
+   */
+  const visible = useMemo(() => {
+    const list = stations.filter((s) => zoom >= s.minZoom);
+    if (focusId && !list.some((s) => s.id === focusId)) {
+      const s = stationMap[focusId];
+      if (s) list.push(s);
+    }
+    return list;
+  }, [zoom, focusId]);
+
+  /** 駅へ移動してポップアップを開く */
+  const goToStation = useCallback((id: string) => {
+    const s = stationMap[id];
+    const map = mapRef.current;
+    if (!s || !map) return;
+    setFocusId(id);
+    map.flyTo([s.lat, s.lng], Math.max(map.getZoom(), s.minZoom), { duration: 0.8 });
+    openPopupWhenReady(markerRefs.current, id);
+  }, []);
 
   // 音声検索などから ?station=xxx が来たらそこへ飛ぶ
   useEffect(() => {
@@ -124,6 +167,10 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
               key={s.id}
               center={[s.lat, s.lng]}
               radius={isMajor ? 11 : 8}
+              ref={(marker) => {
+                if (marker) markerRefs.current.set(s.id, marker);
+                else markerRefs.current.delete(s.id);
+              }}
               pathOptions={{
                 color: "#ffffff",
                 weight: 3,
@@ -131,8 +178,8 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
                 fillOpacity: 1,
               }}
             >
-              <Popup minWidth={260} maxWidth={300}>
-                <StationPopup station={s} />
+              <Popup minWidth={260} maxWidth={300} autoPan keepInView>
+                <StationPopup station={s} onGoToStation={goToStation} />
               </Popup>
             </CircleMarker>
           );
@@ -161,8 +208,23 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
   );
 }
 
-function StationPopup({ station }: { station: Station }) {
-  const line = primaryLineOf(station.id);
+function StationPopup({
+  station,
+  onGoToStation,
+}: {
+  station: Station;
+  onGoToStation: (stationId: string) => void;
+}) {
+  const linesHere = useMemo(() => {
+    const here = linesAtStation(station.id);
+    return [...here].sort(
+      (a, b) => NETWORK_RANK.indexOf(a.network) - NETWORK_RANK.indexOf(b.network),
+    );
+  }, [station.id]);
+
+  const [lineId, setLineId] = useState(() => primaryLineOf(station.id)?.id);
+  const line = linesHere.find((l) => l.id === lineId) ?? linesHere[0];
+
   const order = line?.stationIds ?? [];
   const i = order.indexOf(station.id);
   const prev = i > 0 ? stationMap[order[i - 1]] : null;
@@ -176,21 +238,59 @@ function StationPopup({ station }: { station: Station }) {
         prev={prev}
         next={next}
         color={line?.color ?? "#1e9e5a"}
+        onSelect={onGoToStation}
       />
-      {line && (
-        <p className="ruby-line mt-2 text-center text-lg">
-          <RubyText text={line.name} />
-        </p>
+
+      {/* 乗りかえ。2つ以上の路線が通る駅では、どの路線で見るかを切り替えられる */}
+      {linesHere.length > 1 ? (
+        <div className="mt-2">
+          <p className="ruby-line text-center text-sm text-[#e2661a]">
+            <RubyText text="🔄 のりかえ できる 駅《えき》" />
+          </p>
+          <div className="mt-1 flex flex-wrap justify-center gap-1">
+            {linesHere.map((l) => {
+              const active = l.id === line?.id;
+              return (
+                <button
+                  key={l.id}
+                  type="button"
+                  onClick={() => setLineId(l.id)}
+                  className="ruby-line rounded-full px-2 py-1 text-sm transition active:scale-95"
+                  style={{
+                    background: active ? l.color : "#ffffff",
+                    color: active ? "#ffffff" : l.color,
+                    border: `2px solid ${l.color}`,
+                  }}
+                >
+                  <RubyText text={l.name} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        line && (
+          <p className="ruby-line mt-2 text-center text-lg">
+            <RubyText text={line.name} />
+          </p>
+        )
       )}
+
+      {/* この路線を走る電車。タップで「ずかん」の詳細へ */}
       {trains.length > 0 && (
         <ul className="mt-2 flex gap-2">
           {trains.map((t) => (
-            <li key={t.id} className="flex-1 overflow-hidden rounded-xl bg-white shadow">
-              {/* ポップアップは小さすぎて写真のクレジットが読めないため、イラストを使う */}
-              <TrainArt train={t} className="h-14 w-full object-cover" />
-              <p className="ruby-line px-1 py-1 text-center text-xs">
-                <RubyText text={t.name} />
-              </p>
+            <li key={t.id} className="flex-1">
+              <Link
+                href={`/zukan?train=${t.id}`}
+                className="block overflow-hidden rounded-xl bg-white shadow transition active:scale-95"
+              >
+                {/* ポップアップは小さすぎて写真のクレジットが読めないため、イラストを使う */}
+                <TrainArt train={t} className="h-14 w-full object-cover" />
+                <p className="ruby-line px-1 py-1 text-center text-xs">
+                  <RubyText text={t.name} />
+                </p>
+              </Link>
             </li>
           ))}
         </ul>

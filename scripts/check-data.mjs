@@ -65,12 +65,6 @@ try {
     if (d.length) errors.push(`${label}IDが重複: ${[...new Set(d)].join(", ")}`);
   }
 
-  for (const s of stations) {
-    for (const id of s.transfers ?? []) {
-      if (!lineIds.has(id)) errors.push(`駅 ${s.id}: 存在しない路線ID ${id}`);
-    }
-  }
-
   for (const line of lines) {
     if (!networkIds.has(line.network)) {
       errors.push(`路線 ${line.id}: 存在しないネットワーク ${line.network}`);

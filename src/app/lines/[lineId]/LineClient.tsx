@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
+import { linesAtStation } from "@/data/lines";
 import type { Line, Station } from "@/data/types";
 import RubyText from "@/components/RubyText";
 import StationSign from "@/components/StationSign";
@@ -39,6 +41,10 @@ export default function LineClient({
   const signStation = signIndex >= 0 ? stoppingStations[signIndex] : null;
 
   const trains = trainsOnLine(line.id);
+
+  /** この駅から乗りかえられる他の路線。データから計算する */
+  const transfersOf = (stationId: string) =>
+    linesAtStation(stationId).filter((l) => l.id !== line.id);
 
   return (
     <>
@@ -110,32 +116,48 @@ export default function LineClient({
                 />
               </div>
 
-              <button
-                type="button"
-                disabled={!stops}
-                onClick={() => setSignStationId(s.id)}
-                className={[
-                  "my-1 flex-1 rounded-2xl px-4 py-3 text-left transition",
-                  stops
-                    ? "bg-card shadow active:scale-[0.99]"
-                    : "bg-transparent opacity-40",
-                ].join(" ")}
-              >
-                <span className="ruby-line block text-2xl leading-tight">
-                  <RubyText text={s.name} />
-                  {!stops && (
-                    <span className="ml-2 rounded-full bg-[#c3ccd6] px-2 py-0.5 align-middle text-sm text-white">
-                      <RubyText text="通過《つうか》" />
-                    </span>
-                  )}
-                </span>
-                <span className="block text-base text-foreground/50">{s.romaji}</span>
-                {s.transfers && s.transfers.length > 0 && (
-                  <span className="ruby-line mt-1 block text-base text-[#e2661a]">
-                    <RubyText text="乗《の》りかえ できるよ" />
+              <div className="my-1 flex-1">
+                <button
+                  type="button"
+                  disabled={!stops}
+                  onClick={() => setSignStationId(s.id)}
+                  className={[
+                    "w-full rounded-2xl px-4 py-3 text-left transition",
+                    stops
+                      ? "bg-card shadow active:scale-[0.99]"
+                      : "bg-transparent opacity-40",
+                  ].join(" ")}
+                >
+                  <span className="ruby-line block text-2xl leading-tight">
+                    <RubyText text={s.name} />
+                    {!stops && (
+                      <span className="ml-2 rounded-full bg-[#c3ccd6] px-2 py-0.5 align-middle text-sm text-white">
+                        <RubyText text="通過《つうか》" />
+                      </span>
+                    )}
                   </span>
+                  <span className="block text-base text-foreground/50">{s.romaji}</span>
+                </button>
+
+                {/* 乗りかえ。データから計算するので、路線を足せば自動で増える */}
+                {transfersOf(s.id).length > 0 && (
+                  <div className="mt-1 flex flex-wrap items-center gap-1 pl-1">
+                    <span className="ruby-line text-base text-[#e2661a]">
+                      <RubyText text="🔄 乗《の》りかえ" />
+                    </span>
+                    {transfersOf(s.id).map((other) => (
+                      <Link
+                        key={other.id}
+                        href={`/lines/${other.id}`}
+                        className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
+                        style={{ background: other.color }}
+                      >
+                        <RubyText text={other.name} />
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              </button>
+              </div>
             </li>
           );
         })}
@@ -186,6 +208,7 @@ export default function LineClient({
               prev={stoppingStations[signIndex - 1] ?? null}
               next={stoppingStations[signIndex + 1] ?? null}
               color={type.color}
+              onSelect={setSignStationId}
             />
             <button
               type="button"

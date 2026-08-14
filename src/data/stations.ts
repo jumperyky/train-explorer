@@ -1,4 +1,4 @@
-import type { Station } from "./types";
+﻿import type { Station } from "./types";
 
 /**
  * 駅マスタ。
@@ -32,16 +32,16 @@ const list: Station[] = [
   { id: "gifu-hashima", name: "岐阜羽島《ぎふはしま》", kana: "ぎふはしま", romaji: "Gifu-Hashima", lat: 35.315833, lng: 136.685556, minZoom: 8 },
 
   // ===== 米原（新幹線・琵琶湖線・近江鉄道の乗りかえ駅） =====
-  { id: "maibara", name: "米原《まいばら》", kana: "まいばら", romaji: "Maibara", lat: 35.314722, lng: 136.29, minZoom: 7, transfers: ["tokaido-shinkansen", "biwako", "ohmi-main"] },
+  { id: "maibara", name: "米原《まいばら》", kana: "まいばら", romaji: "Maibara", lat: 35.314722, lng: 136.29, minZoom: 7 },
 
   // ===== 琵琶湖線（米原〜京都） =====
-  { id: "hikone", name: "彦根《ひこね》", kana: "ひこね", romaji: "Hikone", lat: 35.272206, lng: 136.263356, minZoom: 9, transfers: ["ohmi-main"] },
+  { id: "hikone", name: "彦根《ひこね》", kana: "ひこね", romaji: "Hikone", lat: 35.272206, lng: 136.263356, minZoom: 9 },
   { id: "minami-hikone", name: "南彦根《みなみひこね》", kana: "みなみひこね", romaji: "Minami-Hikone", lat: 35.246144, lng: 136.247947, minZoom: 11 },
   { id: "kawase", name: "河瀬《かわせ》", kana: "かわせ", romaji: "Kawase", lat: 35.225192, lng: 136.225039, minZoom: 11 },
   { id: "inae", name: "稲枝《いなえ》", kana: "いなえ", romaji: "Inae", lat: 35.203228, lng: 136.194417, minZoom: 11 },
   { id: "notogawa", name: "能登川《のとがわ》", kana: "のとがわ", romaji: "Notogawa", lat: 35.179911, lng: 136.165894, minZoom: 10 },
   { id: "azuchi", name: "安土《あづち》", kana: "あづち", romaji: "Azuchi", lat: 35.142644, lng: 136.133433, minZoom: 11 },
-  { id: "omi-hachiman", name: "近江八幡《おうみはちまん》", kana: "おうみはちまん", romaji: "Omi-Hachiman", lat: 35.122878, lng: 136.102753, minZoom: 9, transfers: ["ohmi-yokaichi"] },
+  { id: "omi-hachiman", name: "近江八幡《おうみはちまん》", kana: "おうみはちまん", romaji: "Omi-Hachiman", lat: 35.122878, lng: 136.102753, minZoom: 9 },
   { id: "shinohara", name: "篠原《しのはら》", wikipediaTitle: "篠原駅 (滋賀県)", kana: "しのはら", romaji: "Shinohara", lat: 35.09925, lng: 136.071294, minZoom: 11 },
   { id: "yasu", name: "野洲《やす》", kana: "やす", romaji: "Yasu", lat: 35.06855, lng: 136.022706, minZoom: 10 },
   { id: "moriyama", name: "守山《もりやま》", wikipediaTitle: "守山駅 (滋賀県)", kana: "もりやま", romaji: "Moriyama", lat: 35.050419, lng: 135.995678, minZoom: 10 },
@@ -53,7 +53,7 @@ const list: Station[] = [
   { id: "zeze", name: "膳所《ぜぜ》", kana: "ぜぜ", romaji: "Zeze", lat: 34.999419, lng: 135.881042, minZoom: 11 },
   { id: "otsu", name: "大津《おおつ》", kana: "おおつ", romaji: "Otsu", lat: 35.002972, lng: 135.864897, minZoom: 9 },
   { id: "yamashina", name: "山科《やましな》", kana: "やましな", romaji: "Yamashina", lat: 34.992336, lng: 135.817083, minZoom: 10 },
-  { id: "kyoto", name: "京都《きょうと》", kana: "きょうと", romaji: "Kyoto", lat: 34.985458, lng: 135.757756, minZoom: 5, transfers: ["tokaido-shinkansen", "biwako", "jr-kyoto"] },
+  { id: "kyoto", name: "京都《きょうと》", kana: "きょうと", romaji: "Kyoto", lat: 34.985458, lng: 135.757756, minZoom: 5 },
 
   // ===== JR京都線（京都〜大阪） =====
   { id: "nishioji", name: "西大路《にしおおじ》", kana: "にしおおじ", romaji: "Nishioji", lat: 34.981028, lng: 135.732333, minZoom: 11 },
@@ -70,8 +70,8 @@ const list: Station[] = [
   { id: "kishibe", name: "岸辺《きしべ》", kana: "きしべ", romaji: "Kishibe", lat: 34.776814, lng: 135.541622, minZoom: 11 },
   { id: "suita", name: "吹田《すいた》", wikipediaTitle: "吹田駅 (JR西日本)", kana: "すいた", romaji: "Suita", lat: 34.763175, lng: 135.523669, minZoom: 11 },
   { id: "higashi-yodogawa", name: "東淀川《ひがしよどがわ》", kana: "ひがしよどがわ", romaji: "Higashi-Yodogawa", lat: 34.739508, lng: 135.504192, minZoom: 11 },
-  { id: "shin-osaka", name: "新大阪《しんおおさか》", kana: "しんおおさか", romaji: "Shin-Osaka", lat: 34.733483, lng: 135.500114, minZoom: 5, transfers: ["tokaido-shinkansen", "jr-kyoto"] },
-  { id: "osaka", name: "大阪《おおさか》", kana: "おおさか", romaji: "Osaka", lat: 34.701889, lng: 135.494972, minZoom: 8, transfers: ["jr-kyoto", "jr-kobe"] },
+  { id: "shin-osaka", name: "新大阪《しんおおさか》", kana: "しんおおさか", romaji: "Shin-Osaka", lat: 34.733483, lng: 135.500114, minZoom: 5 },
+  { id: "osaka", name: "大阪《おおさか》", kana: "おおさか", romaji: "Osaka", lat: 34.701889, lng: 135.494972, minZoom: 8 },
 
   // ===== JR神戸線（大阪〜姫路） =====
   { id: "tsukamoto", name: "塚本《つかもと》", kana: "つかもと", romaji: "Tsukamoto", lat: 34.712581, lng: 135.468878, minZoom: 11 },
@@ -119,13 +119,13 @@ const list: Station[] = [
   { id: "toriimoto", name: "鳥居本《とりいもと》", kana: "とりいもと", romaji: "Toriimoto", lat: 35.284281, lng: 136.283069, minZoom: 12 },
   { id: "hikone-serikawa", name: "ひこね芹川《せりかわ》", kana: "ひこねせりかわ", romaji: "Hikone-Serikawa", lat: 35.26215, lng: 136.260947, minZoom: 12 },
   { id: "hikoneguchi", name: "彦根口《ひこねぐち》", kana: "ひこねぐち", romaji: "Hikoneguchi", lat: 35.254728, lng: 136.258253, minZoom: 12 },
-  { id: "takamiya", name: "高宮《たかみや》", wikipediaTitle: "高宮駅 (滋賀県)", kana: "たかみや", romaji: "Takamiya", lat: 35.236183, lng: 136.2605, minZoom: 12, transfers: ["ohmi-taga"] },
+  { id: "takamiya", name: "高宮《たかみや》", wikipediaTitle: "高宮駅 (滋賀県)", kana: "たかみや", romaji: "Takamiya", lat: 35.236183, lng: 136.2605, minZoom: 12 },
   { id: "amago", name: "尼子《あまご》", kana: "あまご", romaji: "Amago", lat: 35.213953, lng: 136.246139, minZoom: 12 },
   { id: "toyosato", name: "豊郷《とよさと》", wikipediaTitle: "豊郷駅 (滋賀県)", kana: "とよさと", romaji: "Toyosato", lat: 35.197719, lng: 136.230714, minZoom: 12 },
   { id: "echigawa", name: "愛知川《えちがわ》", kana: "えちがわ", romaji: "Echigawa", lat: 35.175981, lng: 136.213308, minZoom: 12 },
   { id: "gokasho", name: "五個荘《ごかしょう》", kana: "ごかしょう", romaji: "Gokasho", lat: 35.154733, lng: 136.197136, minZoom: 12 },
   { id: "kawabe-no-mori", name: "河辺《かわべ》の森《もり》", kana: "かわべのもり", romaji: "Kawabe-no-mori", lat: 35.1354, lng: 136.196183, minZoom: 12 },
-  { id: "yokaichi", name: "八日市《ようかいち》", kana: "ようかいち", romaji: "Yokaichi", lat: 35.1145, lng: 136.194833, minZoom: 11, transfers: ["ohmi-yokaichi"] },
+  { id: "yokaichi", name: "八日市《ようかいち》", kana: "ようかいち", romaji: "Yokaichi", lat: 35.1145, lng: 136.194833, minZoom: 11 },
   { id: "haseno", name: "長谷野《はせの》", kana: "はせの", romaji: "Haseno", lat: 35.095689, lng: 136.18765, minZoom: 12 },
   { id: "daigaku-mae", name: "大学前《だいがくまえ》", wikipediaTitle: "大学前駅 (滋賀県)", kana: "だいがくまえ", romaji: "Daigaku-mae", lat: 35.087733, lng: 136.184678, minZoom: 12 },
   { id: "kyocera-mae", name: "｜京セラ前《きょうせらまえ》", kana: "きょうせらまえ", romaji: "Kyocera-mae", lat: 35.074797, lng: 136.180361, minZoom: 12 },

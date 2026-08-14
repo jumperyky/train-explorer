@@ -93,9 +93,11 @@ export interface Station {
   wikipediaTitle?: string;
   /** 地図に出現するズームレベルのしきい値（これ以上のズームで表示） */
   minZoom: number;
-  /** 乗りかえできる路線ID */
-  transfers?: string[];
 }
+/*
+ * 乗りかえ路線は駅に持たせない。lines の stationIds から計算する（linesAtStation）。
+ * 手で持つと、路線を足したときに更新し忘れて実態とずれる。
+ */
 
 export interface TrainType {
   id: string;

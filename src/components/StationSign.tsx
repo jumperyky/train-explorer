@@ -4,17 +4,21 @@ import RubyText from "./RubyText";
 /**
  * 駅名標。JR西日本のホームにある看板をイメージしたデザイン。
  * 「まえのえき」「つぎのえき」を左右に置いて、いまどこにいるかを分かりやすくする。
+ *
+ * onSelect を渡すと前後の駅がボタンになり、たどって移動できる。
  */
 export default function StationSign({
   station,
   prev,
   next,
   color = "#1e9e5a",
+  onSelect,
 }: {
   station: Station;
   prev?: Station | null;
   next?: Station | null;
   color?: string;
+  onSelect?: (stationId: string) => void;
 }) {
   return (
     <div className="overflow-hidden rounded-3xl bg-white shadow-lg">
@@ -29,24 +33,61 @@ export default function StationSign({
       </div>
 
       <div className="flex items-stretch border-t-4" style={{ borderColor: color }}>
-        <div className="flex-1 px-3 py-3 text-center">
-          <p className="ruby-line text-sm text-[#14304d]/50">
-            ◀ <RubyText text="前《まえ》" />
-          </p>
-          <p className="ruby-line text-xl text-[#14304d]">
-            {prev ? <RubyText text={prev.name} /> : "─"}
-          </p>
-        </div>
+        <Neighbor
+          station={prev}
+          label="前《まえ》"
+          arrow="◀"
+          arrowFirst
+          onSelect={onSelect}
+        />
         <div className="w-1 self-stretch" style={{ background: `${color}55` }} />
-        <div className="flex-1 px-3 py-3 text-center">
-          <p className="ruby-line text-sm text-[#14304d]/50">
-            <RubyText text="次《つぎ》" /> ▶
-          </p>
-          <p className="ruby-line text-xl text-[#14304d]">
-            {next ? <RubyText text={next.name} /> : "─"}
-          </p>
-        </div>
+        <Neighbor station={next} label="次《つぎ》" arrow="▶" onSelect={onSelect} />
       </div>
     </div>
+  );
+}
+
+function Neighbor({
+  station,
+  label,
+  arrow,
+  arrowFirst = false,
+  onSelect,
+}: {
+  station?: Station | null;
+  label: string;
+  arrow: string;
+  arrowFirst?: boolean;
+  onSelect?: (stationId: string) => void;
+}) {
+  const inner = (
+    <>
+      <span className="ruby-line block text-sm text-[#14304d]/50">
+        {arrowFirst && `${arrow} `}
+        <RubyText text={label} />
+        {!arrowFirst && ` ${arrow}`}
+      </span>
+      <span className="ruby-line block text-xl text-[#14304d]">
+        {station ? <RubyText text={station.name} /> : "─"}
+      </span>
+    </>
+  );
+
+  // 終点側や onSelect が無いときは、ただの表示にする
+  if (!station || !onSelect) {
+    return <div className="flex-1 px-3 py-3 text-center">{inner}</div>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(station.id);
+      }}
+      className="flex-1 px-3 py-3 text-center transition active:scale-95 active:bg-black/5"
+    >
+      {inner}
+    </button>
   );
 }
