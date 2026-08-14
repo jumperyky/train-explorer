@@ -388,6 +388,43 @@ const list: Station[] = [
   { id: "ayameike", name: "菖蒲池《あやめいけ》", kana: "あやめいけ", romaji: "Ayameike", lat: 34.698103, lng: 135.760922, minZoom: 11 },
   { id: "shin-omiya", name: "新大宮《しんおおみや》", kana: "しんおおみや", romaji: "Shin-Omiya", lat: 34.685453, lng: 135.811508, minZoom: 11 },
   { id: "kintetsu-nara", name: "近鉄奈良《きんてつなら》", kana: "きんてつなら", romaji: "Kintetsu-Nara", lat: 34.684436, lng: 135.827419, minZoom: 10 },
+
+  // ===== 湖西線（山科〜近江塩津） =====
+  { id: "otsukyo", name: "大津京《おおつきょう》", kana: "おおつきょう", romaji: "Otsukyo", lat: 35.024128, lng: 135.856992, minZoom: 11 },
+  { id: "karasaki", name: "唐崎《からさき》", wikipediaTitle: "唐崎駅", kana: "からさき", romaji: "Karasaki", lat: 35.049806, lng: 135.8669, minZoom: 11 },
+  { id: "hieizan-sakamoto", name: "比叡山坂本《ひえいざんさかもと》", kana: "ひえいざんさかもと", romaji: "Hieizan-Sakamoto", lat: 35.070461, lng: 135.878267, minZoom: 11 },
+  { id: "ogoto-onsen", name: "｜おごと温泉《おごとおんせん》", kana: "おごとおんせん", romaji: "Ogoto-onsen", lat: 35.097136, lng: 135.894922, minZoom: 11 },
+  { id: "katata", name: "堅田《かたた》", kana: "かたた", romaji: "Katata", lat: 35.120825, lng: 135.915003, minZoom: 10 },
+  // 京都市営地下鉄東西線の小野駅とは別の駅。22km 離れている
+  { id: "jrw-ono", name: "小野《おの》", wikipediaTitle: "小野駅 (滋賀県)", kana: "おの", romaji: "Ono", lat: 35.138886, lng: 135.922542, minZoom: 11 },
+  { id: "wani", name: "和邇《わに》", kana: "わに", romaji: "Wani", lat: 35.162064, lng: 135.922158, minZoom: 11 },
+  { id: "horai", name: "蓬萊《ほうらい》", kana: "ほうらい", romaji: "Horai", lat: 35.18235, lng: 135.914914, minZoom: 11 },
+  { id: "shiga", name: "志賀《しが》", wikipediaTitle: "志賀駅", kana: "しが", romaji: "Shiga", lat: 35.202036, lng: 135.92465, minZoom: 11 },
+  { id: "hira", name: "比良《ひら》", wikipediaTitle: "比良駅 (滋賀県)", kana: "ひら", romaji: "Hira", lat: 35.220047, lng: 135.944342, minZoom: 11 },
+  { id: "omi-maiko", name: "近江舞子《おうみまいこ》", kana: "おうみまいこ", romaji: "Omi-Maiko", lat: 35.236025, lng: 135.959078, minZoom: 11 },
+  { id: "kita-komatsu", name: "北小松《きたこまつ》", kana: "きたこまつ", romaji: "Kita-Komatsu", lat: 35.253747, lng: 135.970681, minZoom: 11 },
+  { id: "omi-takashima", name: "近江高島《おうみたかしま》", kana: "おうみたかしま", romaji: "Omi-Takashima", lat: 35.292631, lng: 136.010383, minZoom: 11 },
+  { id: "adogawa", name: "安曇川《あどがわ》", kana: "あどがわ", romaji: "Adogawa", lat: 35.328625, lng: 136.019944, minZoom: 11 },
+  { id: "shin-asahi", name: "新旭《しんあさひ》", kana: "しんあさひ", romaji: "Shin-Asahi", lat: 35.355653, lng: 136.035742, minZoom: 11 },
+  { id: "omi-imazu", name: "近江今津《おうみいまづ》", kana: "おうみいまづ", romaji: "Omi-Imazu", lat: 35.398603, lng: 136.032272, minZoom: 10 },
+  { id: "omi-nakasho", name: "近江中庄《おうみなかしょう》", kana: "おうみなかしょう", romaji: "Omi-Nakasho", lat: 35.441647, lng: 136.038419, minZoom: 11 },
+  // カタカナだけの駅名なのでルビは付けない
+  { id: "jrw-makino", name: "マキノ", kana: "まきの", romaji: "Makino", lat: 35.461286, lng: 136.059722, minZoom: 11 },
+  { id: "nagahara", name: "永原《ながはら》", kana: "ながはら", romaji: "Nagahara", lat: 35.498833, lng: 136.122247, minZoom: 11 },
+  { id: "omi-shiotsu", name: "近江塩津《おうみしおつ》", kana: "おうみしおつ", romaji: "Omi-Shiotsu", lat: 35.539639, lng: 136.151344, minZoom: 10 },
+
+  // ===== 北陸本線（米原〜敦賀） =====
+  { id: "sakata", name: "坂田《さかた》", wikipediaTitle: "坂田駅", kana: "さかた", romaji: "Sakata", lat: 35.336142, lng: 136.287703, minZoom: 11 },
+  { id: "tamura", name: "田村《たむら》", wikipediaTitle: "田村駅", kana: "たむら", romaji: "Tamura", lat: 35.356308, lng: 136.281814, minZoom: 11 },
+  { id: "nagahama", name: "長浜《ながはま》", wikipediaTitle: "長浜駅", kana: "ながはま", romaji: "Nagahama", lat: 35.378417, lng: 136.265167, minZoom: 10 },
+  { id: "torahime", name: "虎姫《とらひめ》", kana: "とらひめ", romaji: "Torahime", lat: 35.424458, lng: 136.257419, minZoom: 11 },
+  { id: "kawake", name: "河毛《かわけ》", kana: "かわけ", romaji: "Kawake", lat: 35.448425, lng: 136.249519, minZoom: 11 },
+  // JR京都線の高槻駅とは別の「高月」駅
+  { id: "jrw-takatsuki", name: "高月《たかつき》", wikipediaTitle: "高月駅", kana: "たかつき", romaji: "Takatsuki", lat: 35.471242, lng: 136.237347, minZoom: 11 },
+  { id: "kinomoto", name: "｜木ノ本《きのもと》", kana: "きのもと", romaji: "Kinomoto", lat: 35.506256, lng: 136.221628, minZoom: 11 },
+  { id: "yogo", name: "余呉《よご》", kana: "よご", romaji: "Yogo", lat: 35.533842, lng: 136.198067, minZoom: 11 },
+  { id: "shin-hikida", name: "新疋田《しんひきだ》", kana: "しんひきだ", romaji: "Shin-Hikida", lat: 35.594167, lng: 136.100556, minZoom: 11 },
+  { id: "tsuruga", name: "敦賀《つるが》", wikipediaTitle: "敦賀駅", kana: "つるが", romaji: "Tsuruga", lat: 35.6451, lng: 136.078064, minZoom: 9 },
 ];
 
 export const stations: Station[] = list;

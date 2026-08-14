@@ -190,6 +190,18 @@ const KINTETSU_KYOTO = [
   "yamadagawa", "takanohara", "heijo", "yamato-saidaiji",
 ];
 
+const KOSEI = [
+  "yamashina", "otsukyo", "karasaki", "hieizan-sakamoto", "ogoto-onsen",
+  "katata", "jrw-ono", "wani", "horai", "shiga", "hira", "omi-maiko",
+  "kita-komatsu", "omi-takashima", "adogawa", "shin-asahi", "omi-imazu",
+  "omi-nakasho", "jrw-makino", "nagahara", "omi-shiotsu",
+];
+
+const HOKURIKU = [
+  "maibara", "sakata", "tamura", "nagahama", "torahime", "kawake",
+  "jrw-takatsuki", "kinomoto", "yogo", "omi-shiotsu", "shin-hikida", "tsuruga",
+];
+
 const KINTETSU_NARA = [
   "osaka-namba", "nippombashi", "osaka-uehommachi", "tsuruhashi", "imazato",
   "fuse", "kawachi-eiwa", "kawachi-kosaka", "yaenosato", "wakae-iwata",
@@ -281,6 +293,29 @@ export const lines: Line[] = [
           "kusatsu", "minami-kusatsu", "ishiyama", "otsu", "yamashina", "kyoto",
         ],
       },
+      {
+        id: "rakuraku-biwako",
+        name: "らくラクびわこ",
+        kana: "らくらくびわこ",
+        color: "#7a2fa0",
+        description:
+          "朝《あさ》と 夕方《ゆうがた》だけ 走《はし》る 通勤《つうきん》の 特急《とっきゅう》。座《すわ》って 行《い》けるよ。",
+        stops: [
+          "maibara", "hikone", "omi-hachiman", "yasu", "moriyama", "kusatsu",
+          "minami-kusatsu", "ishiyama", "otsu", "yamashina", "kyoto",
+        ],
+        sources: [wikipedia("らくラクびわこ")],
+      },
+      {
+        id: "haruka",
+        name: "はるか",
+        kana: "はるか",
+        color: "#1f8a70",
+        description:
+          "関西空港《かんさいくうこう》へ 行《い》く 特急《とっきゅう》。飛行機《ひこうき》に 乗《の》る 人《ひと》を はこぶよ。",
+        stops: ["yasu", "kusatsu", "kyoto"],
+        sources: [wikipedia("はるか (列車)")],
+      },
     ],
     sources: [wikipedia("琵琶湖線")],
   },
@@ -320,6 +355,36 @@ export const lines: Line[] = [
         description: "京都《きょうと》から 大阪《おおさか》まで たったの 3駅《えき》！ ビュンと 走《はし》るよ。",
         stops: ["kyoto", "takatsuki", "shin-osaka", "osaka"],
         sources: [wikipedia("新快速")],
+      },
+      {
+        id: "thunderbird",
+        name: "サンダーバード",
+        kana: "さんだーばーど",
+        color: "#1f4fb6",
+        description:
+          "大阪《おおさか》から 敦賀《つるが》へ 向《む》かう 特急《とっきゅう》。ここから 湖西線《こせいせん》へ 入《はい》るよ。",
+        stops: ["kyoto", "takatsuki", "shin-osaka", "osaka"],
+        sources: [wikipedia("サンダーバード (列車)")],
+      },
+      {
+        id: "haruka",
+        name: "はるか",
+        kana: "はるか",
+        color: "#1f8a70",
+        description:
+          "京都《きょうと》から 関西空港《かんさいくうこう》へ 向《む》かう 特急《とっきゅう》。",
+        stops: ["kyoto", "shin-osaka", "osaka"],
+        sources: [wikipedia("はるか (列車)")],
+      },
+      {
+        id: "rakuraku-biwako",
+        name: "らくラクびわこ",
+        kana: "らくらくびわこ",
+        color: "#7a2fa0",
+        description:
+          "米原《まいばら》と 大阪《おおさか》を むすぶ 通勤《つうきん》の 特急《とっきゅう》。高槻《たかつき》は 通過《つうか》するよ。",
+        stops: ["kyoto", "shin-osaka", "osaka"],
+        sources: [wikipedia("らくラクびわこ")],
       },
     ],
     sources: [wikipedia("JR京都線")],
@@ -800,6 +865,88 @@ export const lines: Line[] = [
       },
     ],
     sources: [wikipedia("近鉄奈良線")],
+  },
+
+  // ===== JR西日本（琵琶湖の西側と北側） =====
+  {
+    id: "kosei",
+    network: "jrwest",
+    name: "湖西線《こせいせん》",
+    kana: "こせいせん",
+    color: "#1e9e5a",
+    stationIds: KOSEI,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#4b7bec",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: KOSEI,
+      },
+      {
+        id: "shinkaisoku",
+        name: "新快速《しんかいそく》",
+        kana: "しんかいそく",
+        color: "#e5342a",
+        description:
+          "琵琶湖《びわこ》の 西側《にしがわ》を、湖《みずうみ》を 見《み》ながら 走《はし》るよ。",
+        stops: [
+          "yamashina", "otsukyo", "hieizan-sakamoto", "katata", "omi-maiko",
+          "omi-takashima", "adogawa", "shin-asahi", "omi-imazu",
+        ],
+        sources: [wikipedia("湖西線")],
+      },
+      {
+        id: "thunderbird",
+        name: "サンダーバード",
+        kana: "さんだーばーど",
+        color: "#1f4fb6",
+        description:
+          "大阪《おおさか》から 敦賀《つるが》へ 向《む》かう 特急《とっきゅう》。在来線《ざいらいせん》では 日本《にほん》で いちばん 速《はや》い 特急《とっきゅう》なんだ。",
+        stops: ["katata", "omi-imazu"],
+        sources: [wikipedia("サンダーバード (列車)")],
+      },
+    ],
+    sources: [wikipedia("湖西線")],
+  },
+  {
+    id: "hokuriku",
+    network: "jrwest",
+    name: "北陸本線《ほくりくほんせん》",
+    kana: "ほくりくほんせん",
+    color: "#2f7d5a",
+    stationIds: HOKURIKU,
+    types: [
+      {
+        id: "futsu",
+        name: "普通《ふつう》",
+        kana: "ふつう",
+        color: "#4b7bec",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: HOKURIKU,
+      },
+      {
+        id: "shinkaisoku",
+        name: "新快速《しんかいそく》",
+        kana: "しんかいそく",
+        color: "#e5342a",
+        description:
+          "米原《まいばら》から 長浜《ながはま》をこえて、敦賀《つるが》まで 走《はし》る 新快速《しんかいそく》も あるよ。",
+        stops: HOKURIKU,
+      },
+      {
+        id: "thunderbird",
+        name: "サンダーバード",
+        kana: "さんだーばーど",
+        color: "#1f4fb6",
+        description:
+          "湖西線《こせいせん》を 走《はし》ってきて、敦賀《つるが》に 着《つ》くよ。ここで 北陸新幹線《ほくりくしんかんせん》に 乗《の》りかえるんだ。",
+        stops: ["tsuruga"],
+        sources: [wikipedia("サンダーバード (列車)")],
+      },
+    ],
+    sources: [wikipedia("北陸本線")],
   },
 ];
 
