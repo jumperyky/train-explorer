@@ -116,16 +116,16 @@ export default function LineClient({
                 />
               </div>
 
-              <div className="my-1 flex-1">
+              {/* 通過する駅は行ごと薄くする。乗りかえの案内だけ濃いまま残ると、
+                  その列車で乗りかえられるように見えてしまう */}
+              <div className={`my-1 flex-1 ${stops ? "" : "opacity-40"}`}>
                 <button
                   type="button"
                   disabled={!stops}
                   onClick={() => setSignStationId(s.id)}
                   className={[
                     "w-full rounded-2xl px-4 py-3 text-left transition",
-                    stops
-                      ? "bg-card shadow active:scale-[0.99]"
-                      : "bg-transparent opacity-40",
+                    stops ? "bg-card shadow active:scale-[0.99]" : "bg-transparent",
                   ].join(" ")}
                 >
                   <span className="ruby-line block text-2xl leading-tight">
@@ -141,7 +141,13 @@ export default function LineClient({
 
                 {/* 乗りかえ。データから計算するので、路線を足せば自動で増える */}
                 {transfersOf(s.id).length > 0 && (
-                  <div className="mt-1 flex flex-wrap items-center gap-1 pl-1">
+                  <div
+                    className={[
+                      "mt-1 flex flex-wrap items-center gap-1 pl-1",
+                      // 停まらない駅では押せないようにもする（見た目と動きを揃える）
+                      stops ? "" : "pointer-events-none",
+                    ].join(" ")}
+                  >
                     <span className="ruby-line text-base text-[#e2661a]">
                       <RubyText text="🔄 乗《の》りかえ" />
                     </span>
@@ -149,6 +155,7 @@ export default function LineClient({
                       <Link
                         key={other.id}
                         href={`/lines/${other.id}`}
+                        tabIndex={stops ? undefined : -1}
                         className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
                         style={{ background: other.color }}
                       >
@@ -171,14 +178,16 @@ export default function LineClient({
           </h2>
           <ul className="flex gap-3 overflow-x-auto pb-2">
             {trains.map((t) => (
-              <li
-                key={t.id}
-                className="w-44 shrink-0 overflow-hidden rounded-2xl bg-card shadow"
-              >
-                <TrainPhoto train={t} className="h-24 w-full object-cover" />
-                <p className="ruby-line px-3 py-2 text-lg leading-tight">
-                  <RubyText text={t.name} />
-                </p>
+              <li key={t.id} className="w-44 shrink-0">
+                <Link
+                  href={`/zukan?train=${t.id}`}
+                  className="block overflow-hidden rounded-2xl bg-card shadow transition active:scale-95"
+                >
+                  <TrainPhoto train={t} className="h-24 w-full object-cover" />
+                  <p className="ruby-line px-3 py-2 text-lg leading-tight">
+                    <RubyText text={t.name} />
+                  </p>
+                </Link>
               </li>
             ))}
           </ul>
