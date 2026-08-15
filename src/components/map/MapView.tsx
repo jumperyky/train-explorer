@@ -246,7 +246,9 @@ function StationPopup({
   const i = order.indexOf(station.id);
   const prev = i > 0 ? stationMap[order[i - 1]] : null;
   const next = i >= 0 && i < order.length - 1 ? stationMap[order[i + 1]] : null;
-  const trains = line ? trainsOnLine(line.id).slice(0, 3) : [];
+  // 先頭だけ切り出すと、あとから足した特急の車両が黙って消える。
+  // 全部出して、入りきらなければ横スクロールさせる
+  const trains = line ? trainsOnLine(line.id) : [];
 
   return (
     <div className="w-full">
@@ -316,9 +318,9 @@ function StationPopup({
 
       {/* この路線を走る電車。タップで「ずかん」の詳細へ */}
       {trains.length > 0 && (
-        <ul className="mt-2 flex gap-2">
+        <ul className="mt-2 flex gap-2 overflow-x-auto pb-1">
           {trains.map((t) => (
-            <li key={t.id} className="flex-1">
+            <li key={t.id} className="w-20 shrink-0">
               <Link
                 href={`/zukan?train=${t.id}`}
                 className="block overflow-hidden rounded-xl bg-white shadow transition active:scale-95"
