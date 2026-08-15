@@ -247,6 +247,16 @@ export default function LineClient({
               color={type.color}
               onSelect={setSignStationId}
             />
+
+            {/* この駅がどこにあるのかを地図で見る。マップ側で ?station= を拾って
+                その駅まで飛び、駅名標のポップアップを開く */}
+            <Link
+              href={`/map?station=${signStation.id}`}
+              className="ruby-line mt-4 block w-full rounded-2xl bg-[#e2661a] px-4 py-4 text-center text-2xl text-white shadow active:scale-[0.99]"
+            >
+              <RubyText text="🗺️ 地図《ちず》で 見《み》る" />
+            </Link>
+
             <button
               type="button"
               onClick={() => setSignStationId(null)}

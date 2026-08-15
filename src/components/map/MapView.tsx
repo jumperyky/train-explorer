@@ -96,6 +96,36 @@ function MapRefBinder({ mapRef }: { mapRef: React.RefObject<LeafletMap | null> }
   return null;
 }
 
+/**
+ * ?station=xxx（車掌さんマイク・路線の駅名標からのジャンプ）でその駅へ飛び、
+ * 駅名標のポップアップを開く。
+ *
+ * MapContainer の「子」として置くのが要点。react-leaflet が地図を作り終えてから
+ * 子を描画するので、親の useEffect では地図がまだ無く、飛べずに終わってしまう。
+ */
+function StationFocuser({
+  stationId,
+  onFocus,
+  markers,
+}: {
+  stationId?: string | null;
+  onFocus: (stationId: string) => void;
+  markers: React.RefObject<Map<string, LeafletCircleMarker>>;
+}) {
+  const map = useMap();
+  useEffect(() => {
+    if (!stationId) return;
+    const s = stationMap[stationId];
+    if (!s) return;
+    // ズームが浅いままだとピンが描画されず、ポップアップを開けない
+    onFocus(stationId);
+    map.flyTo([s.lat, s.lng], Math.max(s.minZoom, 12), { duration: 1.2 });
+    // 飛んでいる最中に開くと、ポップアップの autoPan が飛行と引っぱり合う
+    map.once("moveend", () => openPopupWhenReady(markers.current, stationId));
+  }, [stationId, map, onFocus, markers]);
+  return null;
+}
+
 export default function MapView({ focusStationId }: { focusStationId?: string | null }) {
   const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [focusId, setFocusId] = useState<string | null>(focusStationId ?? null);
@@ -125,15 +155,6 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
     openPopupWhenReady(markerRefs.current, id);
   }, []);
 
-  // 音声検索などから ?station=xxx が来たらそこへ飛ぶ
-  useEffect(() => {
-    if (!focusStationId) return;
-    const s = stationMap[focusStationId];
-    const map = mapRef.current;
-    if (!s || !map) return;
-    map.flyTo([s.lat, s.lng], Math.max(s.minZoom, 12), { duration: 1.2 });
-  }, [focusStationId]);
-
   return (
     <div className="relative h-full w-full">
       <MapContainer
@@ -146,6 +167,11 @@ export default function MapView({ focusStationId }: { focusStationId?: string | 
       >
         <MapRefBinder mapRef={mapRef} />
         <ZoomWatcher onZoom={setZoom} />
+        <StationFocuser
+          stationId={focusStationId}
+          onFocus={setFocusId}
+          markers={markerRefs}
+        />
         {/*
           既定のクレジットは <a> でOSMのサイトに出られてしまう。
           子どもが地図の隅を誤タップしただけで外に出るのは避けたいので、
