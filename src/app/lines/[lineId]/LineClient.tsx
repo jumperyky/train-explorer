@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { linesAtStation, nearbyStations } from "@/data/lines";
-import type { Line, Station } from "@/data/types";
+import { getLine, linesAtStation, nearbyStations } from "@/data/lines";
+import type { Line, LineConnection, Station } from "@/data/types";
 import RubyText from "@/components/RubyText";
+import LineConnectionBand from "@/components/LineConnectionBand";
 import StationSign from "@/components/StationSign";
 import { trainsOnLine } from "@/data/trains";
 import TrainPhoto from "@/components/TrainPhoto";
@@ -45,6 +46,34 @@ export default function LineClient({
   /** この駅から乗りかえられる他の路線。データから計算する */
   const transfersOf = (stationId: string) =>
     linesAtStation(stationId).filter((l) => l.id !== line.id);
+
+  /**
+   * 線路の続き。つなぎ目が先頭の駅なら路線図の上、最後の駅なら下、
+   * とちゅうの駅ならその駅の行のすぐ下に出す。
+   * 相手の路線が消えている接続は、リンク切れになるので黙って落とす。
+   */
+  const firstId = line.stationIds[0];
+  const lastId = line.stationIds[line.stationIds.length - 1];
+  const connectionsAt = (stationId: string): LineConnection[] =>
+    (line.connections ?? []).filter(
+      (c) => c.stationId === stationId && getLine(c.lineId),
+    );
+
+  const renderBand = (c: LineConnection, where: "up" | "down" | "branch") => {
+    const target = getLine(c.lineId);
+    if (!target) return null;
+    return (
+      <LineConnectionBand
+        key={`${c.lineId}-${c.stationId}`}
+        connection={c}
+        target={target}
+        fromColor={line.color}
+        where={where}
+        // 選んでいる種別が止まらない駅では、乗りかえの案内と同じように薄くする
+        dimmed={where === "branch" && !stopSet.has(c.stationId)}
+      />
+    );
+  };
 
   return (
     <>
@@ -94,109 +123,122 @@ export default function LineClient({
         </span>
       </div>
 
+      {/* 手前から続いてきた線路 */}
+      {connectionsAt(firstId).map((c) => renderBand(c, "up"))}
+
       {/* 駅一覧 */}
       <ol className="relative flex flex-col">
         {stations.map((s) => {
           const stops = stopSet.has(s.id);
+          const branches =
+            s.id === firstId || s.id === lastId ? [] : connectionsAt(s.id);
           return (
-            <li key={s.id} className="relative flex items-stretch gap-3">
-              {/* 路線の縦線 */}
-              <div className="relative flex w-10 shrink-0 justify-center">
-                <span
-                  className="absolute inset-y-0 w-2 rounded-full"
-                  style={{ background: `${line.color}55` }}
-                />
-                <span
-                  className="relative z-10 mt-6 h-6 w-6 shrink-0 rounded-full border-4"
-                  style={{
-                    background: stops ? type.color : "#ffffff",
-                    borderColor: stops ? "#ffffff" : "#c3ccd6",
-                    boxShadow: stops ? `0 0 0 3px ${type.color}55` : "none",
-                  }}
-                />
-              </div>
+            <li key={s.id} className="relative flex flex-col">
+              <div className="flex items-stretch gap-3">
+                {/* 路線の縦線 */}
+                <div className="relative flex w-10 shrink-0 justify-center">
+                  <span
+                    className="absolute inset-y-0 w-2 rounded-full"
+                    style={{ background: `${line.color}55` }}
+                  />
+                  <span
+                    className="relative z-10 mt-6 h-6 w-6 shrink-0 rounded-full border-4"
+                    style={{
+                      background: stops ? type.color : "#ffffff",
+                      borderColor: stops ? "#ffffff" : "#c3ccd6",
+                      boxShadow: stops ? `0 0 0 3px ${type.color}55` : "none",
+                    }}
+                  />
+                </div>
 
-              {/* 通過する駅は行ごと薄くする。乗りかえの案内だけ濃いまま残ると、
-                  その列車で乗りかえられるように見えてしまう */}
-              <div className={`my-1 flex-1 ${stops ? "" : "opacity-40"}`}>
-                <button
-                  type="button"
-                  disabled={!stops}
-                  onClick={() => setSignStationId(s.id)}
-                  className={[
-                    "w-full rounded-2xl px-4 py-3 text-left transition",
-                    stops ? "bg-card shadow active:scale-[0.99]" : "bg-transparent",
-                  ].join(" ")}
-                >
-                  <span className="ruby-line block text-2xl leading-tight">
-                    <RubyText text={s.name} />
-                    {!stops && (
-                      <span className="ml-2 rounded-full bg-[#c3ccd6] px-2 py-0.5 align-middle text-sm text-white">
-                        <RubyText text="通過《つうか》" />
-                      </span>
-                    )}
-                  </span>
-                  <span className="block text-base text-foreground/50">{s.romaji}</span>
-                </button>
-
-                {/* すぐそばの別名の駅（石山 ⇔ 京阪石山 など）。距離から計算する */}
-                {nearbyStations(s.id).length > 0 && (
-                  <div
+                {/* 通過する駅は行ごと薄くする。乗りかえの案内だけ濃いまま残ると、
+                    その列車で乗りかえられるように見えてしまう */}
+                <div className={`my-1 flex-1 ${stops ? "" : "opacity-40"}`}>
+                  <button
+                    type="button"
+                    disabled={!stops}
+                    onClick={() => setSignStationId(s.id)}
                     className={[
-                      "mt-1 flex flex-wrap items-center gap-1 pl-1",
-                      stops ? "" : "pointer-events-none",
+                      "w-full rounded-2xl px-4 py-3 text-left transition",
+                      stops ? "bg-card shadow active:scale-[0.99]" : "bg-transparent",
                     ].join(" ")}
                   >
-                    <span className="ruby-line text-base text-[#1f4fb6]">
-                      <RubyText text="🚶 あるいて のりかえ" />
+                    <span className="ruby-line block text-2xl leading-tight">
+                      <RubyText text={s.name} />
+                      {!stops && (
+                        <span className="ml-2 rounded-full bg-[#c3ccd6] px-2 py-0.5 align-middle text-sm text-white">
+                          <RubyText text="通過《つうか》" />
+                        </span>
+                      )}
                     </span>
-                    {nearbyStations(s.id).map((other) => {
-                      const line = linesAtStation(other.id)[0];
-                      return (
+                    <span className="block text-base text-foreground/50">{s.romaji}</span>
+                  </button>
+
+                  {/* すぐそばの別名の駅（石山 ⇔ 京阪石山 など）。距離から計算する */}
+                  {nearbyStations(s.id).length > 0 && (
+                    <div
+                      className={[
+                        "mt-1 flex flex-wrap items-center gap-1 pl-1",
+                        stops ? "" : "pointer-events-none",
+                      ].join(" ")}
+                    >
+                      <span className="ruby-line text-base text-[#1f4fb6]">
+                        <RubyText text="🚶 あるいて のりかえ" />
+                      </span>
+                      {nearbyStations(s.id).map((other) => {
+                        const line = linesAtStation(other.id)[0];
+                        return (
+                          <Link
+                            key={other.id}
+                            href={`/map?station=${other.id}`}
+                            tabIndex={stops ? undefined : -1}
+                            className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
+                            style={{ background: line?.color ?? "#1f4fb6" }}
+                          >
+                            <RubyText text={other.name} />
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* 乗りかえ。データから計算するので、路線を足せば自動で増える */}
+                  {transfersOf(s.id).length > 0 && (
+                    <div
+                      className={[
+                        "mt-1 flex flex-wrap items-center gap-1 pl-1",
+                        // 停まらない駅では押せないようにもする（見た目と動きを揃える）
+                        stops ? "" : "pointer-events-none",
+                      ].join(" ")}
+                    >
+                      <span className="ruby-line text-base text-[#e2661a]">
+                        <RubyText text="🔄 乗《の》りかえ" />
+                      </span>
+                      {transfersOf(s.id).map((other) => (
                         <Link
                           key={other.id}
-                          href={`/map?station=${other.id}`}
+                          href={`/lines/${other.id}`}
                           tabIndex={stops ? undefined : -1}
                           className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
-                          style={{ background: line?.color ?? "#1f4fb6" }}
+                          style={{ background: other.color }}
                         >
                           <RubyText text={other.name} />
                         </Link>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {/* 乗りかえ。データから計算するので、路線を足せば自動で増える */}
-                {transfersOf(s.id).length > 0 && (
-                  <div
-                    className={[
-                      "mt-1 flex flex-wrap items-center gap-1 pl-1",
-                      // 停まらない駅では押せないようにもする（見た目と動きを揃える）
-                      stops ? "" : "pointer-events-none",
-                    ].join(" ")}
-                  >
-                    <span className="ruby-line text-base text-[#e2661a]">
-                      <RubyText text="🔄 乗《の》りかえ" />
-                    </span>
-                    {transfersOf(s.id).map((other) => (
-                      <Link
-                        key={other.id}
-                        href={`/lines/${other.id}`}
-                        tabIndex={stops ? undefined : -1}
-                        className="ruby-line rounded-full px-2 py-1 text-sm text-white shadow active:scale-95"
-                        style={{ background: other.color }}
-                      >
-                        <RubyText text={other.name} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* とちゅうで分かれていく線路（山形新幹線・秋田新幹線など） */}
+              {branches.map((c) => renderBand(c, "branch"))}
             </li>
           );
         })}
       </ol>
+
+      {/* この先へ続いていく線路 */}
+      {connectionsAt(lastId).map((c) => renderBand(c, "down"))}
 
       {/* この路線を走る電車 */}
       {trains.length > 0 && (

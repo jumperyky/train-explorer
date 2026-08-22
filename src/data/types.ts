@@ -130,6 +130,28 @@ export interface TrainType {
   sources?: Citation[];
 }
 
+/**
+ * 路線の「この先」につながる別の路線。
+ *
+ * 同じ駅を通る路線どうしの乗りかえは linesAtStation が駅の行に出す。
+ * こちらは「線路の続き」を表す。東海道新幹線の新大阪から先は山陽新幹線、
+ * のように、路線図の端で切れてしまう先をたどれるようにするためのもの。
+ */
+export interface LineConnection {
+  /** つながる先の路線ID */
+  lineId: string;
+  /**
+   * つなぎ目の駅ID。**この路線の stationIds に含まれていること。**
+   * 相手の路線にも含まれていれば線路がつながっている扱い、
+   * 含まれていなければ乗り継ぎ（through: false でなければならない）。
+   */
+  stationId: string;
+  /** 直通運転しているか。false なら「のりかえ」と表示する */
+  through: boolean;
+  /** 子ども向けの一言 */
+  note?: RubyString;
+}
+
 export interface Line {
   id: string;
   network: NetworkId;
@@ -141,6 +163,8 @@ export interface Line {
   stationIds: string[];
   /** 列車種別 */
   types: TrainType[];
+  /** 線路の続き（路線図の端から次の路線へ行けるようにする） */
+  connections?: LineConnection[];
   /** 路線と種別の説明の裏付け */
   sources: Citation[];
 }

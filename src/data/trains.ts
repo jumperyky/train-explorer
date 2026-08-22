@@ -13,7 +13,7 @@ import { wikipedia } from "./citations";
  */
 
 export const trains: Train[] = [
-  // ===== 東海道新幹線 =====
+  // ===== 東海道・山陽新幹線 =====
   {
     id: "n700s",
     network: "shinkansen",
@@ -31,7 +31,7 @@ export const trains: Train[] = [
       "体《からだ》の よこに「Supreme」の マークが 16か所《しょ》 ついているんだ。",
       "2021年《ねん》に ローレル賞《しょう》と グッドデザイン賞《しょう》を もらったよ。",
     ],
-    lineIds: ["tokaido-shinkansen"],
+    lineIds: ["tokaido-shinkansen", "sanyo-shinkansen"],
     wikipediaTitle: "新幹線N700S系電車",
     photo: { commonsFile: "File:Series-N700S-J2.jpg" },
     sources: [wikipedia("新幹線N700S系電車")],
@@ -54,7 +54,7 @@ export const trains: Train[] = [
       "15年《ねん》で 2992両《りょう》も つくられた。0系《けい》の つぎに 多《おお》いんだ。",
       "2008年《ねん》に ブルーリボン賞《しょう》を もらったよ。",
     ],
-    lineIds: ["tokaido-shinkansen"],
+    lineIds: ["tokaido-shinkansen", "sanyo-shinkansen"],
     wikipediaTitle: "新幹線N700系電車",
     photo: { commonsFile: "File:Shinkansen N700 z15.jpg" },
     sources: [wikipedia("新幹線N700系電車")],
@@ -77,7 +77,7 @@ export const trains: Train[] = [
       "東海道《とうかいどう》新幹線《しんかんせん》と 山陽《さんよう》新幹線《しんかんせん》の 線路《せんろ》を しらべて まわるよ。",
       "700系《けい》を もとに つくられていて、270キロで 走《はし》れるよ。",
     ],
-    lineIds: ["tokaido-shinkansen"],
+    lineIds: ["tokaido-shinkansen", "sanyo-shinkansen"],
     wikipediaTitle: "新幹線923形電車",
     photo: { commonsFile: "File:Type923-T4.jpg" },
     sources: [wikipedia("新幹線923形電車")],

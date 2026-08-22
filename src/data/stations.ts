@@ -425,6 +425,125 @@ const list: Station[] = [
   { id: "yogo", name: "余呉《よご》", kana: "よご", romaji: "Yogo", lat: 35.533842, lng: 136.198067, minZoom: 11 },
   { id: "shin-hikida", name: "新疋田《しんひきだ》", kana: "しんひきだ", romaji: "Shin-Hikida", lat: 35.594167, lng: 136.100556, minZoom: 11 },
   { id: "tsuruga", name: "敦賀《つるが》", wikipediaTitle: "敦賀駅", kana: "つるが", romaji: "Tsuruga", lat: 35.6451, lng: 136.078064, minZoom: 9 },
+  // ===== 山陽新幹線（新大阪〜博多） =====
+  // 西明石・姫路はJR神戸線と同じ駅なので、上の定義を使いまわす
+  { id: "shin-kobe", name: "新神戸《しんこうべ》", kana: "しんこうべ", romaji: "Shin-Kobe", lat: 34.679, lng: 135.197472, minZoom: 7 },
+  { id: "aioi", name: "相生《あいおい》", wikipediaTitle: "相生駅 (兵庫県)", kana: "あいおい", romaji: "Aioi", lat: 34.803611, lng: 134.467778, minZoom: 9 },
+  { id: "okayama", name: "岡山《おかやま》", kana: "おかやま", romaji: "Okayama", lat: 34.666389, lng: 133.918056, minZoom: 6 },
+  { id: "shin-kurashiki", name: "新倉敷《しんくらしき》", kana: "しんくらしき", romaji: "Shin-Kurashiki", lat: 34.590278, lng: 133.692778, minZoom: 9 },
+  { id: "fukuyama", name: "福山《ふくやま》", wikipediaTitle: "福山駅", kana: "ふくやま", romaji: "Fukuyama", lat: 34.489444, lng: 133.3625, minZoom: 8 },
+  { id: "shin-onomichi", name: "新尾道《しんおのみち》", kana: "しんおのみち", romaji: "Shin-Onomichi", lat: 34.431667, lng: 133.201111, minZoom: 9 },
+  { id: "mihara", name: "三原《みはら》", kana: "みはら", romaji: "Mihara", lat: 34.397778, lng: 133.079444, minZoom: 9 },
+  { id: "higashi-hiroshima", name: "東広島《ひがしひろしま》", kana: "ひがしひろしま", romaji: "Higashi-Hiroshima", lat: 34.413056, lng: 132.756667, minZoom: 9 },
+  { id: "hiroshima", name: "広島《ひろしま》", kana: "ひろしま", romaji: "Hiroshima", lat: 34.397778, lng: 132.475833, minZoom: 6 },
+  { id: "shin-iwakuni", name: "新岩国《しんいわくに》", kana: "しんいわくに", romaji: "Shin-Iwakuni", lat: 34.172778, lng: 132.185, minZoom: 9 },
+  { id: "tokuyama", name: "徳山《とくやま》", kana: "とくやま", romaji: "Tokuyama", lat: 34.055278, lng: 131.806111, minZoom: 8 },
+  { id: "shin-yamaguchi", name: "新山口《しんやまぐち》", kana: "しんやまぐち", romaji: "Shin-Yamaguchi", lat: 34.093889, lng: 131.398333, minZoom: 8 },
+  { id: "asa", name: "厚狭《あさ》", kana: "あさ", romaji: "Asa", lat: 34.029444, lng: 131.161111, minZoom: 9 },
+  { id: "shin-shimonoseki", name: "新下関《しんしものせき》", kana: "しんしものせき", romaji: "Shin-Shimonoseki", lat: 33.981389, lng: 130.914722, minZoom: 8 },
+  { id: "kokura", name: "小倉《こくら》", wikipediaTitle: "小倉駅 (福岡県)", kana: "こくら", romaji: "Kokura", lat: 33.886667, lng: 130.882222, minZoom: 7 },
+  { id: "hakata", name: "博多《はかた》", kana: "はかた", romaji: "Hakata", lat: 33.589722, lng: 130.420833, minZoom: 6 },
+
+  // ===== 東北新幹線（東京〜新青森） =====
+  { id: "ueno", name: "上野《うえの》", kana: "うえの", romaji: "Ueno", lat: 35.713889, lng: 139.777222, minZoom: 7 },
+  // 阪急京都線の大宮駅（京都）と同名。IDは県名を足して区別する
+  { id: "omiya-saitama", name: "大宮《おおみや》", wikipediaTitle: "大宮駅 (埼玉県)", kana: "おおみや", romaji: "Omiya", lat: 35.906111, lng: 139.623889, minZoom: 6 },
+  { id: "oyama", name: "小山《おやま》", wikipediaTitle: "小山駅", kana: "おやま", romaji: "Oyama", lat: 36.314722, lng: 139.800556, minZoom: 9 },
+  { id: "utsunomiya", name: "宇都宮《うつのみや》", kana: "うつのみや", romaji: "Utsunomiya", lat: 36.559167, lng: 139.898611, minZoom: 8 },
+  { id: "nasushiobara", name: "那須塩原《なすしおばら》", kana: "なすしおばら", romaji: "Nasushiobara", lat: 36.936389, lng: 140.0425, minZoom: 9 },
+  { id: "shin-shirakawa", name: "新白河《しんしらかわ》", kana: "しんしらかわ", romaji: "Shin-Shirakawa", lat: 37.1275, lng: 140.206111, minZoom: 9 },
+  { id: "koriyama", name: "郡山《こおりやま》", wikipediaTitle: "郡山駅 (福島県)", kana: "こおりやま", romaji: "Koriyama", lat: 37.398611, lng: 140.387222, minZoom: 8 },
+  { id: "fukushima", name: "福島《ふくしま》", wikipediaTitle: "福島駅 (福島県)", kana: "ふくしま", romaji: "Fukushima", lat: 37.754167, lng: 140.459167, minZoom: 7 },
+  { id: "shiroishi-zao", name: "白石蔵王《しろいしざおう》", kana: "しろいしざおう", romaji: "Shiroishi-Zao", lat: 38.001111, lng: 140.630556, minZoom: 9 },
+  { id: "sendai", name: "仙台《せんだい》", kana: "せんだい", romaji: "Sendai", lat: 38.260278, lng: 140.882222, minZoom: 6 },
+  { id: "furukawa", name: "古川《ふるかわ》", wikipediaTitle: "古川駅", kana: "ふるかわ", romaji: "Furukawa", lat: 38.571389, lng: 140.955556, minZoom: 9 },
+  // ひらがな＋漢字の駅名。｜で親文字の始まりを示さずに「高原」だけへ振る
+  { id: "kurikoma-kogen", name: "くりこま高原《こうげん》", kana: "くりこまこうげん", romaji: "Kurikoma-Kogen", lat: 38.746944, lng: 141.029167, minZoom: 9 },
+  { id: "ichinoseki", name: "一ノ関《いちのせき》", kana: "いちのせき", romaji: "Ichinoseki", lat: 38.934444, lng: 141.126944, minZoom: 9 },
+  { id: "mizusawa-esashi", name: "水沢江刺《みずさわえさし》", kana: "みずさわえさし", romaji: "Mizusawa-Esashi", lat: 39.136389, lng: 141.165, minZoom: 9 },
+  { id: "kitakami", name: "北上《きたかみ》", wikipediaTitle: "北上駅", kana: "きたかみ", romaji: "Kitakami", lat: 39.286111, lng: 141.113056, minZoom: 9 },
+  { id: "shin-hanamaki", name: "新花巻《しんはなまき》", kana: "しんはなまき", romaji: "Shin-Hanamaki", lat: 39.389444, lng: 141.160278, minZoom: 9 },
+  { id: "morioka", name: "盛岡《もりおか》", kana: "もりおか", romaji: "Morioka", lat: 39.701667, lng: 141.136667, minZoom: 6 },
+  { id: "iwate-numakunai", name: "いわて沼宮内《ぬまくない》", kana: "いわてぬまくない", romaji: "Iwate-Numakunai", lat: 39.967778, lng: 141.196667, minZoom: 9 },
+  { id: "ninohe", name: "二戸《にのへ》", kana: "にのへ", romaji: "Ninohe", lat: 40.270833, lng: 141.300833, minZoom: 9 },
+  { id: "hachinohe", name: "八戸《はちのへ》", kana: "はちのへ", romaji: "Hachinohe", lat: 40.512222, lng: 141.488611, minZoom: 8 },
+  { id: "shichinohe-towada", name: "七戸十和田《しちのへとわだ》", kana: "しちのへとわだ", romaji: "Shichinohe-Towada", lat: 40.711944, lng: 141.1375, minZoom: 9 },
+  { id: "shin-aomori", name: "新青森《しんあおもり》", kana: "しんあおもり", romaji: "Shin-Aomori", lat: 40.827222, lng: 140.692222, minZoom: 6 },
+
+  // ===== 上越新幹線（大宮〜新潟） =====
+  { id: "kumagaya", name: "熊谷《くまがや》", kana: "くまがや", romaji: "Kumagaya", lat: 36.139444, lng: 139.390278, minZoom: 9 },
+  { id: "honjo-waseda", name: "本庄早稲田《ほんじょうわせだ》", kana: "ほんじょうわせだ", romaji: "Honjo-Waseda", lat: 36.222222, lng: 139.171667, minZoom: 9 },
+  { id: "takasaki", name: "高崎《たかさき》", kana: "たかさき", romaji: "Takasaki", lat: 36.322222, lng: 139.012778, minZoom: 7 },
+  { id: "jomo-kogen", name: "上毛高原《じょうもうこうげん》", kana: "じょうもうこうげん", romaji: "Jomo-Kogen", lat: 36.679167, lng: 138.976944, minZoom: 9 },
+  { id: "echigo-yuzawa", name: "越後湯沢《えちごゆざわ》", kana: "えちごゆざわ", romaji: "Echigo-Yuzawa", lat: 36.935278, lng: 138.810278, minZoom: 9 },
+  { id: "urasa", name: "浦佐《うらさ》", kana: "うらさ", romaji: "Urasa", lat: 37.163333, lng: 138.933889, minZoom: 9 },
+  { id: "nagaoka", name: "長岡《ながおか》", wikipediaTitle: "長岡駅", kana: "ながおか", romaji: "Nagaoka", lat: 37.447222, lng: 138.851667, minZoom: 8 },
+  { id: "tsubame-sanjo", name: "燕三条《つばめさんじょう》", kana: "つばめさんじょう", romaji: "Tsubame-Sanjo", lat: 37.641389, lng: 138.934444, minZoom: 9 },
+  { id: "niigata", name: "新潟《にいがた》", kana: "にいがた", romaji: "Niigata", lat: 37.9125, lng: 139.061389, minZoom: 6 },
+
+  // ===== 北陸新幹線（高崎〜敦賀。東京から直通で走る） =====
+  { id: "annaka-haruna", name: "安中榛名《あんなかはるな》", kana: "あんなかはるな", romaji: "Annaka-Haruna", lat: 36.321111, lng: 138.867222, minZoom: 10 },
+  { id: "karuizawa", name: "軽井沢《かるいざわ》", kana: "かるいざわ", romaji: "Karuizawa", lat: 36.342778, lng: 138.635278, minZoom: 9 },
+  { id: "sakudaira", name: "佐久平《さくだいら》", kana: "さくだいら", romaji: "Sakudaira", lat: 36.264722, lng: 138.476944, minZoom: 9 },
+  { id: "ueda", name: "上田《うえだ》", wikipediaTitle: "上田駅", kana: "うえだ", romaji: "Ueda", lat: 36.402222, lng: 138.249167, minZoom: 9 },
+  { id: "nagano", name: "長野《ながの》", wikipediaTitle: "長野駅", kana: "ながの", romaji: "Nagano", lat: 36.643056, lng: 138.188611, minZoom: 7 },
+  { id: "iiyama", name: "飯山《いいやま》", wikipediaTitle: "飯山駅", kana: "いいやま", romaji: "Iiyama", lat: 36.852222, lng: 138.364722, minZoom: 10 },
+  { id: "joetsu-myoko", name: "上越妙高《じょうえつみょうこう》", kana: "じょうえつみょうこう", romaji: "Joetsu-Myoko", lat: 37.127222, lng: 138.238056, minZoom: 9 },
+  { id: "itoigawa", name: "糸魚川《いといがわ》", kana: "いといがわ", romaji: "Itoigawa", lat: 37.038889, lng: 137.861667, minZoom: 9 },
+  { id: "kurobe-unazukionsen", name: "黒部宇奈月温泉《くろべうなづきおんせん》", kana: "くろべうなづきおんせん", romaji: "Kurobe-Unazukionsen", lat: 36.877778, lng: 137.429167, minZoom: 10 },
+  { id: "toyama", name: "富山《とやま》", wikipediaTitle: "富山駅", kana: "とやま", romaji: "Toyama", lat: 36.701389, lng: 137.213611, minZoom: 7 },
+  { id: "shin-takaoka", name: "新高岡《しんたかおか》", kana: "しんたかおか", romaji: "Shin-Takaoka", lat: 36.728889, lng: 137.009167, minZoom: 10 },
+  { id: "kanazawa", name: "金沢《かなざわ》", kana: "かなざわ", romaji: "Kanazawa", lat: 36.578056, lng: 136.648056, minZoom: 7 },
+  { id: "komatsu", name: "小松《こまつ》", wikipediaTitle: "小松駅", kana: "こまつ", romaji: "Komatsu", lat: 36.402778, lng: 136.449722, minZoom: 9 },
+  { id: "kaga-onsen", name: "加賀温泉《かがおんせん》", kana: "かがおんせん", romaji: "Kaga-Onsen", lat: 36.306944, lng: 136.329722, minZoom: 10 },
+  { id: "awara-onsen", name: "芦原温泉《あわらおんせん》", kana: "あわらおんせん", romaji: "Awara-Onsen", lat: 36.220556, lng: 136.228611, minZoom: 10 },
+  { id: "fukui", name: "福井《ふくい》", wikipediaTitle: "福井駅 (福井県)", kana: "ふくい", romaji: "Fukui", lat: 36.061944, lng: 136.223333, minZoom: 8 },
+  { id: "echizen-takefu", name: "越前《えちぜん》たけふ", kana: "えちぜんたけふ", romaji: "Echizen-Takefu", lat: 35.887222, lng: 136.185556, minZoom: 10 },
+
+  // ===== 九州新幹線（博多〜鹿児島中央） =====
+  { id: "shin-tosu", name: "新鳥栖《しんとす》", kana: "しんとす", romaji: "Shin-Tosu", lat: 33.376944, lng: 130.478889, minZoom: 9 },
+  { id: "kurume", name: "久留米《くるめ》", kana: "くるめ", romaji: "Kurume", lat: 33.316389, lng: 130.515556, minZoom: 9 },
+  { id: "chikugo-funagoya", name: "筑後船小屋《ちくごふなごや》", kana: "ちくごふなごや", romaji: "Chikugo-Funagoya", lat: 33.204722, lng: 130.482222, minZoom: 10 },
+  { id: "shin-omuta", name: "新大牟田《しんおおむた》", kana: "しんおおむた", romaji: "Shin-Omuta", lat: 33.043889, lng: 130.469167, minZoom: 10 },
+  { id: "shin-tamana", name: "新玉名《しんたまな》", kana: "しんたまな", romaji: "Shin-Tamana", lat: 32.922778, lng: 130.549722, minZoom: 10 },
+  { id: "kumamoto", name: "熊本《くまもと》", kana: "くまもと", romaji: "Kumamoto", lat: 32.789722, lng: 130.688611, minZoom: 7 },
+  { id: "shin-yatsushiro", name: "新八代《しんやつしろ》", kana: "しんやつしろ", romaji: "Shin-Yatsushiro", lat: 32.507222, lng: 130.611389, minZoom: 9 },
+  { id: "shin-minamata", name: "新水俣《しんみなまた》", kana: "しんみなまた", romaji: "Shin-Minamata", lat: 32.210833, lng: 130.411111, minZoom: 10 },
+  { id: "izumi", name: "出水《いずみ》", wikipediaTitle: "出水駅", kana: "いずみ", romaji: "Izumi", lat: 32.089444, lng: 130.352778, minZoom: 9 },
+  // 仙台（せんだい）と同じ読みだが別の駅。IDは県名を足して区別する
+  { id: "sendai-kagoshima", name: "川内《せんだい》", wikipediaTitle: "川内駅 (鹿児島県)", kana: "せんだい", romaji: "Sendai", lat: 31.814167, lng: 130.306111, minZoom: 9 },
+  { id: "kagoshima-chuo", name: "鹿児島中央《かごしまちゅうおう》", kana: "かごしまちゅうおう", romaji: "Kagoshima-Chuo", lat: 31.583333, lng: 130.541667, minZoom: 6 },
+
+  // ===== 北海道新幹線（新青森〜新函館北斗） =====
+  { id: "oku-tsugaru-imabetsu", name: "奥津軽《おくつがる》いまべつ", kana: "おくつがるいまべつ", romaji: "Oku-Tsugaru-Imabetsu", lat: 41.149722, lng: 140.504444, minZoom: 9 },
+  { id: "kikonai", name: "木古内《きこない》", kana: "きこない", romaji: "Kikonai", lat: 41.678611, lng: 140.44, minZoom: 9 },
+  { id: "shin-hakodate-hokuto", name: "新函館北斗《しんはこだてほくと》", kana: "しんはこだてほくと", romaji: "Shin-Hakodate-Hokuto", lat: 41.905278, lng: 140.648611, minZoom: 6 },
+
+  // ===== 山形新幹線（福島〜新庄） =====
+  { id: "yonezawa", name: "米沢《よねざわ》", kana: "よねざわ", romaji: "Yonezawa", lat: 37.906944, lng: 140.119444, minZoom: 9 },
+  { id: "takahata", name: "高畠《たかはた》", kana: "たかはた", romaji: "Takahata", lat: 38.002222, lng: 140.193056, minZoom: 10 },
+  { id: "akayu", name: "赤湯《あかゆ》", kana: "あかゆ", romaji: "Akayu", lat: 38.05, lng: 140.170556, minZoom: 10 },
+  { id: "kaminoyama-onsen", name: "かみのやま温泉《おんせん》", kana: "かみのやまおんせん", romaji: "Kaminoyama-Onsen", lat: 38.152222, lng: 140.276389, minZoom: 10 },
+  { id: "yamagata", name: "山形《やまがた》", wikipediaTitle: "山形駅", kana: "やまがた", romaji: "Yamagata", lat: 38.248056, lng: 140.329722, minZoom: 7 },
+  { id: "tendo", name: "天童《てんどう》", kana: "てんどう", romaji: "Tendo", lat: 38.360278, lng: 140.378056, minZoom: 10 },
+  { id: "sakuranbo-higashine", name: "さくらんぼ東根《ひがしね》", kana: "さくらんぼひがしね", romaji: "Sakuranbo-Higashine", lat: 38.417778, lng: 140.386667, minZoom: 10 },
+  { id: "murayama", name: "村山《むらやま》", wikipediaTitle: "村山駅", kana: "むらやま", romaji: "Murayama", lat: 38.482778, lng: 140.381389, minZoom: 10 },
+  { id: "oishida", name: "大石田《おおいしだ》", kana: "おおいしだ", romaji: "Oishida", lat: 38.592778, lng: 140.366389, minZoom: 10 },
+  { id: "shinjo", name: "新庄《しんじょう》", kana: "しんじょう", romaji: "Shinjo", lat: 38.764167, lng: 140.301111, minZoom: 9 },
+
+  // ===== 秋田新幹線（盛岡〜秋田） =====
+  { id: "shizukuishi", name: "雫石《しずくいし》", kana: "しずくいし", romaji: "Shizukuishi", lat: 39.696111, lng: 140.977222, minZoom: 10 },
+  { id: "tazawako", name: "田沢湖《たざわこ》", kana: "たざわこ", romaji: "Tazawako", lat: 39.697222, lng: 140.731667, minZoom: 10 },
+  { id: "kakunodate", name: "角館《かくのだて》", kana: "かくのだて", romaji: "Kakunodate", lat: 39.592222, lng: 140.566111, minZoom: 10 },
+  { id: "omagari", name: "大曲《おおまがり》", wikipediaTitle: "大曲駅 (秋田県)", kana: "おおまがり", romaji: "Omagari", lat: 39.453611, lng: 140.482222, minZoom: 9 },
+  { id: "akita", name: "秋田《あきた》", kana: "あきた", romaji: "Akita", lat: 39.717778, lng: 140.129167, minZoom: 7 },
+
+  // ===== 西九州新幹線（武雄温泉〜長崎） =====
+  { id: "takeo-onsen", name: "武雄温泉《たけおおんせん》", kana: "たけおおんせん", romaji: "Takeo-Onsen", lat: 33.193611, lng: 130.018611, minZoom: 9 },
+  { id: "ureshino-onsen", name: "嬉野温泉《うれしのおんせん》", kana: "うれしのおんせん", romaji: "Ureshino-Onsen", lat: 33.125556, lng: 130.05, minZoom: 10 },
+  { id: "shin-omura", name: "新大村《しんおおむら》", kana: "しんおおむら", romaji: "Shin-Omura", lat: 32.924167, lng: 129.954722, minZoom: 10 },
+  { id: "isahaya", name: "諫早《いさはや》", kana: "いさはや", romaji: "Isahaya", lat: 32.843611, lng: 130.053333, minZoom: 9 },
+  { id: "nagasaki", name: "長崎《ながさき》", kana: "ながさき", romaji: "Nagasaki", lat: 32.7525, lng: 129.873333, minZoom: 7 },
 ];
 
 export const stations: Station[] = list;

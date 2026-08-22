@@ -14,7 +14,7 @@ export const networks: Network[] = [
   {
     id: "shinkansen",
     name: "新幹線《しんかんせん》",
-    formalName: "東海道《とうかいどう》新幹線《しんかんせん》",
+    formalName: "新幹線《しんかんせん》",
     color: "#0b57d0",
     emoji: "🚄",
   },
@@ -101,6 +101,62 @@ const SHINKANSEN = [
   "tokyo", "shinagawa", "shin-yokohama", "odawara", "atami", "mishima",
   "shin-fuji", "shizuoka", "kakegawa", "hamamatsu", "toyohashi", "mikawa-anjo",
   "nagoya", "gifu-hashima", "maibara", "kyoto", "shin-osaka",
+];
+
+const SANYO_SHINKANSEN = [
+  "shin-osaka", "shin-kobe", "nishi-akashi", "himeji", "aioi", "okayama",
+  "shin-kurashiki", "fukuyama", "shin-onomichi", "mihara", "higashi-hiroshima",
+  "hiroshima", "shin-iwakuni", "tokuyama", "shin-yamaguchi", "asa",
+  "shin-shimonoseki", "kokura", "hakata",
+];
+
+const TOHOKU_SHINKANSEN = [
+  "tokyo", "ueno", "omiya-saitama", "oyama", "utsunomiya", "nasushiobara",
+  "shin-shirakawa", "koriyama", "fukushima", "shiroishi-zao", "sendai",
+  "furukawa", "kurikoma-kogen", "ichinoseki", "mizusawa-esashi", "kitakami",
+  "shin-hanamaki", "morioka", "iwate-numakunai", "ninohe", "hachinohe",
+  "shichinohe-towada", "shin-aomori",
+];
+
+const JOETSU_SHINKANSEN = [
+  "omiya-saitama", "kumagaya", "honjo-waseda", "takasaki", "jomo-kogen",
+  "echigo-yuzawa", "urasa", "nagaoka", "tsubame-sanjo", "niigata",
+];
+
+/*
+ * 北陸新幹線の正式な区間は高崎〜敦賀だが、列車はすべて東京から
+ * 東北・上越新幹線の線路を通ってやってくる。子どもが乗るときに見るのは
+ * 「東京から敦賀まで」なので、東京・上野・大宮を頭に付けた運転系統で持つ。
+ * （熊谷・本庄早稲田は上越新幹線の駅で、北陸新幹線の列車は通過する）
+ */
+const HOKURIKU_SHINKANSEN = [
+  "tokyo", "ueno", "omiya-saitama", "takasaki", "annaka-haruna", "karuizawa",
+  "sakudaira", "ueda", "nagano", "iiyama", "joetsu-myoko", "itoigawa",
+  "kurobe-unazukionsen", "toyama", "shin-takaoka", "kanazawa", "komatsu",
+  "kaga-onsen", "awara-onsen", "fukui", "echizen-takefu", "tsuruga",
+];
+
+const KYUSHU_SHINKANSEN = [
+  "hakata", "shin-tosu", "kurume", "chikugo-funagoya", "shin-omuta",
+  "shin-tamana", "kumamoto", "shin-yatsushiro", "shin-minamata", "izumi",
+  "sendai-kagoshima", "kagoshima-chuo",
+];
+
+const HOKKAIDO_SHINKANSEN = [
+  "shin-aomori", "oku-tsugaru-imabetsu", "kikonai", "shin-hakodate-hokuto",
+];
+
+const YAMAGATA_SHINKANSEN = [
+  "fukushima", "yonezawa", "takahata", "akayu", "kaminoyama-onsen", "yamagata",
+  "tendo", "sakuranbo-higashine", "murayama", "oishida", "shinjo",
+];
+
+const AKITA_SHINKANSEN = [
+  "morioka", "shizukuishi", "tazawako", "kakunodate", "omagari", "akita",
+];
+
+const NISHI_KYUSHU_SHINKANSEN = [
+  "takeo-onsen", "ureshino-onsen", "shin-omura", "isahaya", "nagasaki",
 ];
 
 const OHMI_MAIN = [
@@ -255,7 +311,475 @@ export const lines: Line[] = [
         sources: [wikipedia("こだま (列車)")],
       },
     ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "tokyo",
+        through: false,
+        note: "東京《とうきょう》駅《えき》で のりかえ。ホームは となりだけど、線路《せんろ》は つながっていないんだ。",
+      },
+      {
+        lineId: "sanyo-shinkansen",
+        stationId: "shin-osaka",
+        through: true,
+        note: "のぞみ・ひかりは 新大阪《しんおおさか》から そのまま 山陽《さんよう》新幹線《しんかんせん》へ 走《はし》っていくよ。",
+      },
+    ],
     sources: [wikipedia("東海道新幹線")],
+  },
+  {
+    id: "sanyo-shinkansen",
+    network: "shinkansen",
+    name: "山陽《さんよう》新幹線《しんかんせん》",
+    kana: "さんようしんかんせん",
+    color: "#1668c4",
+    stationIds: SANYO_SHINKANSEN,
+    types: [
+      {
+        id: "nozomi",
+        name: "のぞみ",
+        kana: "のぞみ",
+        color: "#e5342a",
+        description:
+          "東海道《とうかいどう》新幹線《しんかんせん》から そのまま 走《はし》ってきて、博多《はかた》まで 行《い》く いちばん 速《はや》い 新幹線《しんかんせん》。",
+        stops: [
+          "shin-osaka", "shin-kobe", "okayama", "hiroshima", "kokura", "hakata",
+        ],
+        sources: [wikipedia("のぞみ (列車)")],
+      },
+      {
+        id: "sakura",
+        name: "さくら",
+        kana: "さくら",
+        color: "#e46a9a",
+        description:
+          "新大阪《しんおおさか》から 九州《きゅうしゅう》新幹線《しんかんせん》へ 直通《ちょくつう》する 新幹線《しんかんせん》。座席《ざせき》が ゆったり しているんだ。",
+        stops: [
+          "shin-osaka", "shin-kobe", "himeji", "okayama", "fukuyama",
+          "hiroshima", "tokuyama", "shin-yamaguchi", "kokura", "hakata",
+        ],
+        sources: [wikipedia("さくら (列車)")],
+      },
+      {
+        id: "kodama",
+        name: "こだま",
+        kana: "こだま",
+        color: "#3aa76d",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: SANYO_SHINKANSEN,
+        sources: [wikipedia("こだま (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tokaido-shinkansen",
+        stationId: "shin-osaka",
+        through: true,
+        note: "新大阪《しんおおさか》から 先《さき》は 東海道《とうかいどう》新幹線《しんかんせん》。東京《とうきょう》まで つながっているよ。",
+      },
+      {
+        lineId: "kyushu-shinkansen",
+        stationId: "hakata",
+        through: true,
+        note: "みずほ・さくらは 博多《はかた》から そのまま 九州《きゅうしゅう》新幹線《しんかんせん》へ 走《はし》っていくよ。",
+      },
+    ],
+    sources: [wikipedia("山陽新幹線")],
+  },
+  {
+    id: "tohoku-shinkansen",
+    network: "shinkansen",
+    name: "東北《とうほく》新幹線《しんかんせん》",
+    kana: "とうほくしんかんせん",
+    color: "#0b8043",
+    stationIds: TOHOKU_SHINKANSEN,
+    types: [
+      {
+        id: "hayabusa",
+        name: "はやぶさ",
+        kana: "はやぶさ",
+        color: "#0b8043",
+        description:
+          "東北《とうほく》新幹線《しんかんせん》で いちばん 速《はや》い 列車《れっしゃ》。北海道《ほっかいどう》新幹線《しんかんせん》まで 走《はし》る ものも あるよ。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "sendai", "morioka", "hachinohe",
+          "shin-aomori",
+        ],
+        sources: [wikipedia("はやぶさ (列車)")],
+      },
+      {
+        id: "yamabiko",
+        name: "やまびこ",
+        kana: "やまびこ",
+        color: "#1f7ae0",
+        description:
+          "宇都宮《うつのみや》や 郡山《こおりやま》にも 止《と》まって、仙台《せんだい》へ 向《む》かう 新幹線《しんかんせん》。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "utsunomiya", "koriyama",
+          "fukushima", "sendai",
+        ],
+        sources: [wikipedia("やまびこ (列車)")],
+      },
+      {
+        id: "nasuno",
+        name: "なすの",
+        kana: "なすの",
+        color: "#8e44ad",
+        description:
+          "東京《とうきょう》の 近《ちか》くを こまめに 止《と》まる 新幹線《しんかんせん》。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "oyama", "utsunomiya",
+          "nasushiobara", "shin-shirakawa", "koriyama",
+        ],
+        sources: [wikipedia("なすの (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tokaido-shinkansen",
+        stationId: "tokyo",
+        through: false,
+        note: "東京《とうきょう》駅《えき》で のりかえると、東海道《とうかいどう》新幹線《しんかんせん》で 西《にし》へ 行《い》けるよ。",
+      },
+      {
+        lineId: "joetsu-shinkansen",
+        stationId: "omiya-saitama",
+        through: true,
+        note: "新潟《にいがた》へ 行《い》く 上越《じょうえつ》新幹線《しんかんせん》は、大宮《おおみや》から 分《わ》かれていくよ。",
+      },
+      {
+        lineId: "hokuriku-shinkansen",
+        stationId: "omiya-saitama",
+        through: true,
+        note: "金沢《かなざわ》・敦賀《つるが》へ 行《い》く 北陸《ほくりく》新幹線《しんかんせん》も、大宮《おおみや》から 分《わ》かれていくよ。",
+      },
+      {
+        lineId: "yamagata-shinkansen",
+        stationId: "fukushima",
+        through: true,
+        note: "つばさは 福島《ふくしま》で きりはなされて、山形《やまがた》の ほうへ 走《はし》っていくよ。",
+      },
+      {
+        lineId: "akita-shinkansen",
+        stationId: "morioka",
+        through: true,
+        note: "こまちは 盛岡《もりおか》で はやぶさと きりはなされて、秋田《あきた》へ 向《む》かうよ。",
+      },
+      {
+        lineId: "hokkaido-shinkansen",
+        stationId: "shin-aomori",
+        through: true,
+        note: "新青森《しんあおもり》から 先《さき》は 北海道《ほっかいどう》新幹線《しんかんせん》。海《うみ》の 下《した》の トンネルを とおるよ。",
+      },
+    ],
+    sources: [wikipedia("東北新幹線")],
+  },
+  {
+    id: "joetsu-shinkansen",
+    network: "shinkansen",
+    name: "上越《じょうえつ》新幹線《しんかんせん》",
+    kana: "じょうえつしんかんせん",
+    color: "#1f9d55",
+    stationIds: JOETSU_SHINKANSEN,
+    types: [
+      {
+        id: "toki",
+        name: "とき",
+        kana: "とき",
+        color: "#e5342a",
+        description:
+          "大宮《おおみや》から 新潟《にいがた》へ 向《む》かう 新幹線《しんかんせん》。長《なが》い トンネルで 山《やま》を こえるよ。",
+        stops: [
+          "omiya-saitama", "takasaki", "echigo-yuzawa", "nagaoka",
+          "tsubame-sanjo", "niigata",
+        ],
+        sources: [wikipedia("とき (列車)")],
+      },
+      {
+        id: "tanigawa",
+        name: "たにがわ",
+        kana: "たにがわ",
+        color: "#1f7ae0",
+        description:
+          "こまめに 止《と》まって、越後湯沢《えちごゆざわ》の スキー場《じょう》の ほうへ 行《い》く 新幹線《しんかんせん》。",
+        stops: [
+          "omiya-saitama", "kumagaya", "honjo-waseda", "takasaki", "jomo-kogen",
+          "echigo-yuzawa",
+        ],
+        sources: [wikipedia("たにがわ (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "omiya-saitama",
+        through: true,
+        note: "とき・たにがわは 大宮《おおみや》から 東北《とうほく》新幹線《しんかんせん》の 線路《せんろ》に 入《はい》って、東京《とうきょう》まで 行《い》くよ。",
+      },
+    ],
+    sources: [wikipedia("上越新幹線")],
+  },
+  {
+    id: "hokuriku-shinkansen",
+    network: "shinkansen",
+    name: "北陸《ほくりく》新幹線《しんかんせん》",
+    kana: "ほくりくしんかんせん",
+    color: "#c0392b",
+    stationIds: HOKURIKU_SHINKANSEN,
+    types: [
+      {
+        id: "kagayaki",
+        name: "かがやき",
+        kana: "かがやき",
+        color: "#c0392b",
+        description:
+          "東京《とうきょう》から 敦賀《つるが》まで いちばん 速《はや》く 走《はし》る 新幹線《しんかんせん》。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "nagano", "toyama", "kanazawa",
+          "fukui", "tsuruga",
+        ],
+        sources: [wikipedia("かがやき (列車)")],
+      },
+      {
+        id: "hakutaka",
+        name: "はくたか",
+        kana: "はくたか",
+        color: "#1f7ae0",
+        description:
+          "こまめに 止《と》まりながら、東京《とうきょう》から 敦賀《つるが》へ 向《む》かう 新幹線《しんかんせん》。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "takasaki", "karuizawa", "sakudaira",
+          "ueda", "nagano", "iiyama", "joetsu-myoko", "itoigawa",
+          "kurobe-unazukionsen", "toyama", "shin-takaoka", "kanazawa", "komatsu",
+          "kaga-onsen", "awara-onsen", "fukui", "echizen-takefu", "tsuruga",
+        ],
+        sources: [wikipedia("はくたか (列車)")],
+      },
+      {
+        id: "tsurugi",
+        name: "つるぎ",
+        kana: "つるぎ",
+        color: "#0e8a6e",
+        description:
+          "富山《とやま》や 金沢《かなざわ》と 敦賀《つるが》の あいだを 行《い》ったり 来《き》たり する 新幹線《しんかんせん》。",
+        stops: [
+          "toyama", "shin-takaoka", "kanazawa", "komatsu", "kaga-onsen",
+          "awara-onsen", "fukui", "echizen-takefu", "tsuruga",
+        ],
+        sources: [wikipedia("つるぎ (列車)")],
+      },
+      {
+        id: "asama",
+        name: "あさま",
+        kana: "あさま",
+        color: "#e08a1f",
+        description:
+          "東京《とうきょう》と 長野《ながの》の あいだを 走《はし》る 新幹線《しんかんせん》。軽井沢《かるいざわ》にも 止《と》まるよ。",
+        stops: [
+          "tokyo", "ueno", "omiya-saitama", "takasaki", "annaka-haruna",
+          "karuizawa", "sakudaira", "ueda", "nagano",
+        ],
+        sources: [wikipedia("あさま (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "tokyo",
+        through: true,
+        note: "東京《とうきょう》から 大宮《おおみや》までは 東北《とうほく》新幹線《しんかんせん》と 同《おな》じ 線路《せんろ》を 走《はし》るよ。",
+      },
+      {
+        lineId: "hokuriku",
+        stationId: "tsuruga",
+        through: false,
+        note: "敦賀《つるが》で 特急《とっきゅう》サンダーバードに のりかえると、大阪《おおさか》へ 行《い》けるよ。",
+      },
+    ],
+    sources: [wikipedia("北陸新幹線")],
+  },
+  {
+    id: "kyushu-shinkansen",
+    network: "shinkansen",
+    name: "九州《きゅうしゅう》新幹線《しんかんせん》",
+    kana: "きゅうしゅうしんかんせん",
+    color: "#d94f00",
+    stationIds: KYUSHU_SHINKANSEN,
+    types: [
+      {
+        id: "mizuho",
+        name: "みずほ",
+        kana: "みずほ",
+        color: "#c8102e",
+        description:
+          "新大阪《しんおおさか》から 鹿児島中央《かごしまちゅうおう》まで、いちばん 速《はや》く 走《はし》る 新幹線《しんかんせん》。",
+        stops: ["hakata", "kumamoto", "kagoshima-chuo"],
+        sources: [wikipedia("みずほ (列車)")],
+      },
+      {
+        id: "sakura",
+        name: "さくら",
+        kana: "さくら",
+        color: "#e46a9a",
+        description:
+          "山陽《さんよう》新幹線《しんかんせん》から 直通《ちょくつう》してくる 新幹線《しんかんせん》。",
+        stops: [
+          "hakata", "shin-tosu", "kurume", "kumamoto", "sendai-kagoshima",
+          "kagoshima-chuo",
+        ],
+        sources: [wikipedia("さくら (列車)")],
+      },
+      {
+        id: "tsubame",
+        name: "つばめ",
+        kana: "つばめ",
+        color: "#3aa76d",
+        description: "全部《ぜんぶ》の 駅《えき》に 止《と》まるよ。",
+        stops: KYUSHU_SHINKANSEN,
+        sources: [wikipedia("つばめ (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "sanyo-shinkansen",
+        stationId: "hakata",
+        through: true,
+        note: "博多《はかた》から 先《さき》は 山陽《さんよう》新幹線《しんかんせん》。新大阪《しんおおさか》まで つながっているよ。",
+      },
+      {
+        lineId: "nishi-kyushu-shinkansen",
+        stationId: "hakata",
+        through: false,
+        note: "長崎《ながさき》へ 行《い》くときは、博多《はかた》から 特急《とっきゅう》リレーかもめに 乗《の》って 武雄温泉《たけおおんせん》へ。",
+      },
+    ],
+    sources: [wikipedia("九州新幹線")],
+  },
+  {
+    id: "hokkaido-shinkansen",
+    network: "shinkansen",
+    name: "北海道《ほっかいどう》新幹線《しんかんせん》",
+    kana: "ほっかいどうしんかんせん",
+    color: "#4b8f3f",
+    stationIds: HOKKAIDO_SHINKANSEN,
+    types: [
+      {
+        id: "hayabusa",
+        name: "はやぶさ",
+        kana: "はやぶさ",
+        color: "#0b8043",
+        description:
+          "東京《とうきょう》から ずっと 走《はし》ってきて、青函《せいかん》トンネルで 海《うみ》の 下《した》を くぐる 新幹線《しんかんせん》。",
+        stops: ["shin-aomori", "shin-hakodate-hokuto"],
+        sources: [wikipedia("はやぶさ (列車)")],
+      },
+      {
+        id: "hayate",
+        name: "はやて",
+        kana: "はやて",
+        color: "#1f7ae0",
+        description:
+          "新青森《しんあおもり》と 新函館北斗《しんはこだてほくと》の あいだを 走《はし》る 新幹線《しんかんせん》。とちゅうの 駅《えき》にも 止《と》まるよ。",
+        stops: HOKKAIDO_SHINKANSEN,
+        sources: [wikipedia("はやて (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "shin-aomori",
+        through: true,
+        note: "新青森《しんあおもり》から 先《さき》は 東北《とうほく》新幹線《しんかんせん》。東京《とうきょう》まで つながっているよ。",
+      },
+    ],
+    sources: [wikipedia("北海道新幹線")],
+  },
+  {
+    id: "yamagata-shinkansen",
+    network: "shinkansen",
+    name: "山形《やまがた》新幹線《しんかんせん》",
+    kana: "やまがたしんかんせん",
+    color: "#9b59b6",
+    stationIds: YAMAGATA_SHINKANSEN,
+    types: [
+      {
+        id: "tsubasa",
+        name: "つばさ",
+        kana: "つばさ",
+        color: "#9b59b6",
+        description:
+          "福島《ふくしま》から 先《さき》は 在来線《ざいらいせん》の 線路《せんろ》を 走《はし》る「ミニ新幹線《しんかんせん》」。ふみきりも あるんだ。",
+        stops: YAMAGATA_SHINKANSEN,
+        sources: [wikipedia("つばさ (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "fukushima",
+        through: true,
+        note: "つばさは 福島《ふくしま》で やまびこと くっついて、東京《とうきょう》まで いっしょに 走《はし》るよ。",
+      },
+    ],
+    sources: [wikipedia("山形新幹線")],
+  },
+  {
+    id: "akita-shinkansen",
+    network: "shinkansen",
+    name: "秋田《あきた》新幹線《しんかんせん》",
+    kana: "あきたしんかんせん",
+    color: "#d81b60",
+    stationIds: AKITA_SHINKANSEN,
+    types: [
+      {
+        id: "komachi",
+        name: "こまち",
+        kana: "こまち",
+        color: "#d81b60",
+        description:
+          "盛岡《もりおか》から 先《さき》は 在来線《ざいらいせん》の 線路《せんろ》を 走《はし》る「ミニ新幹線《しんかんせん》」。大曲《おおまがり》では 進《すす》む むきが 変《か》わるよ。",
+        stops: AKITA_SHINKANSEN,
+        sources: [wikipedia("こまち (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "tohoku-shinkansen",
+        stationId: "morioka",
+        through: true,
+        note: "こまちは 盛岡《もりおか》で はやぶさと くっついて、東京《とうきょう》まで いっしょに 走《はし》るよ。",
+      },
+    ],
+    sources: [wikipedia("秋田新幹線")],
+  },
+  {
+    id: "nishi-kyushu-shinkansen",
+    network: "shinkansen",
+    name: "西九州《にしきゅうしゅう》新幹線《しんかんせん》",
+    kana: "にしきゅうしゅうしんかんせん",
+    color: "#e8112d",
+    stationIds: NISHI_KYUSHU_SHINKANSEN,
+    types: [
+      {
+        id: "kamome",
+        name: "かもめ",
+        kana: "かもめ",
+        color: "#e8112d",
+        description:
+          "武雄温泉《たけおおんせん》から 長崎《ながさき》まで 走《はし》る、いちばん 新《あたら》しい 新幹線《しんかんせん》。",
+        stops: NISHI_KYUSHU_SHINKANSEN,
+        sources: [wikipedia("かもめ (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "kyushu-shinkansen",
+        stationId: "takeo-onsen",
+        through: false,
+        note: "武雄温泉《たけおおんせん》では、同《おな》じ ホームの むかいがわに 特急《とっきゅう》リレーかもめが 待《ま》っていて、博多《はかた》へ 行《い》けるよ。",
+      },
+    ],
+    sources: [wikipedia("西九州新幹線")],
   },
   {
     id: "biwako",
@@ -944,6 +1468,14 @@ export const lines: Line[] = [
           "湖西線《こせいせん》を 走《はし》ってきて、敦賀《つるが》に 着《つ》くよ。ここで 北陸新幹線《ほくりくしんかんせん》に 乗《の》りかえるんだ。",
         stops: ["tsuruga"],
         sources: [wikipedia("サンダーバード (列車)")],
+      },
+    ],
+    connections: [
+      {
+        lineId: "hokuriku-shinkansen",
+        stationId: "tsuruga",
+        through: false,
+        note: "敦賀《つるが》で 北陸《ほくりく》新幹線《しんかんせん》に のりかえると、福井《ふくい》・金沢《かなざわ》へ 行《い》けるよ。",
       },
     ],
     sources: [wikipedia("北陸本線")],

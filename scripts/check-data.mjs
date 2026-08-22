@@ -123,6 +123,37 @@ try {
         );
       }
     }
+
+    // 線路の続き（connections）。つなぎ目の駅を間違えると、路線ページの
+    // どこにも帯が出ない（黙って消える）ので、ここで気づけるようにする。
+    for (const c of line.connections ?? []) {
+      const target = lines.find((l) => l.id === c.lineId);
+      if (!target) {
+        errors.push(`路線 ${line.id}: 存在しない接続先の路線ID ${c.lineId}`);
+        continue;
+      }
+      if (target.id === line.id) {
+        errors.push(`路線 ${line.id}: 自分自身につながっています`);
+      }
+      if (!belongs.has(c.stationId)) {
+        errors.push(
+          `路線 ${line.id}: 接続 (${c.lineId}) のつなぎ目 ${c.stationId} が この路線の駅ではありません`,
+        );
+        continue;
+      }
+      // 相手の路線に無い駅でつながっているなら、線路は続いていない
+      if (c.through && !target.stationIds.includes(c.stationId)) {
+        errors.push(
+          `路線 ${line.id}: 接続 (${c.lineId}) は ${c.stationId} を共有していないのに through: true です`,
+        );
+      }
+      // 片方向だけの接続は、行ったきり戻れないページになる
+      if (!(target.connections ?? []).some((b) => b.lineId === line.id)) {
+        warnings.push(
+          `路線 ${line.id}: ${c.lineId} へつながっていますが、${c.lineId} 側に ${line.id} への接続がありません`,
+        );
+      }
+    }
   }
 
   const usedStations = new Set(lines.flatMap((l) => l.stationIds));
